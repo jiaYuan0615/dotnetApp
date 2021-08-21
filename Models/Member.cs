@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetApp.Models
 {
-  [Table("Users")]
-  public class User
+  [Table("Members")]
+  public class Member
   {
     [Key]
     public Guid id { get; set; }
@@ -15,7 +15,13 @@ namespace dotnetApp.Models
     public string email { get; set; }
     [Required]
     public string password { get; set; }
-
-    public ICollection<Article> Articles { get; set; }
+    [Required]
+    public string avatar { get; set; }
+    [Required]
+    public string name { get; set; }
+    [Required]
+    public string gender { get; set; }
+    [Required]
+    public  DateTime email_verified { get; set; }
   }
 }

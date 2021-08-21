@@ -10,8 +10,10 @@ namespace dotnetApp.Context
 
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Article> Articles { get; set; }
-    public DbSet<Profile> Profiles { get; set; }
+    public DbSet<Member> Members { get; set; }
+    public DbSet<Sound> Sounds { get; set; }
+    public DbSet<Singer> Singers { get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<Collection> Collections { get; set; }
   }
 }

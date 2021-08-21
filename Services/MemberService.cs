@@ -6,20 +6,19 @@ using dotnetApp.Repositories.User;
 
 namespace dotnetApp.Services
 {
-  public class UserService
+  public class MemberService
   {
     private readonly DatabaseContext _DatabaseContext;
-    public UserService(DatabaseContext DatabaseContext)
+    public MemberService(DatabaseContext DatabaseContext)
     {
       _DatabaseContext = DatabaseContext;
     }
 
-    public async Task<bool> RegisterUser(RegisterRepository registerRepository)
+    public async Task<bool> RegisterMember(RegisterRepository registerRepository)
     {
       try
       {
-        User user = new User();
-        await _DatabaseContext.AddAsync(registerRepository);
+        _DatabaseContext.Add(registerRepository);
         await _DatabaseContext.SaveChangesAsync();
         return true;
       }
