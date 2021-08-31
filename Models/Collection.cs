@@ -10,8 +10,10 @@ namespace dotnetApp.Models
     [Key]
     public Guid id { get; set; }
     [Required]
+    [StringLength(30)]
     public string name { get; set; }
     [Required]
+    [ForeignKey("memberId")]
     public Guid memberId { get; set; }
   }
 }

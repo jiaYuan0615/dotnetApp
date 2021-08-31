@@ -17,16 +17,23 @@ namespace dotnetApp.Helpers
       _configuration = configuration;
     }
 
-    public string yieldToken(string username, int expireHour = 24)
+    public string yieldToken(Guid id, int expireHour = 24)
     {
+      // 直接取值
+      // var issuer = _configuration["JwtSettings:Issuer"];
+      // var signKey = _configuration["JwtSettings:SignKey"];
+      // 使用泛型取值
       var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
       var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
 
       var claims = new List<Claim>();
 
-      claims.Add(new Claim(JwtRegisteredClaimNames.Sub, username));
+      // claims.Add(new Claim(JwtRegisteredClaimNames.Sub, "Yuan"));
 
+      // JWT 的唯一識別碼
       claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+      claims.Add(new Claim("id", id.ToString()));
 
       var identify = new ClaimsIdentity(claims);
 

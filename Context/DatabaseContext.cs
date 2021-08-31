@@ -10,6 +10,11 @@ namespace dotnetApp.Context
 
     }
 
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+      base.OnModelCreating(builder);
+    }
+
     public DbSet<Member> Members { get; set; }
     public DbSet<Sound> Sounds { get; set; }
     public DbSet<Singer> Singers { get; set; }
