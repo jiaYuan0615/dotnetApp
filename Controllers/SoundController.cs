@@ -32,11 +32,10 @@ namespace dotnetApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> postSound()
+    public IActionResult postSound()
     {
-      await _memberService.UserLogin();
       string data = "Yo";
-      return Ok(new { data = data });
+      return Ok(new { data });
     }
   }
 }

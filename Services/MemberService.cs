@@ -10,7 +10,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace dotnetApp.Services
 {
-  public class MemberService
+
+  public interface IMemberService
+  {
+    IEnumerable<Member> GetMember();
+    Member GetAssignMember(Guid id);
+    bool MemberLogin();
+    Task RegisterMember(RegisterRepository registerRepository);
+    bool CheckPassword(string plain, string hash);
+    string HashPassword(string plain);
+  }
+  public class MemberService : IMemberService
   {
     private readonly DatabaseContext _databaseContext;
     public MemberService(DatabaseContext databaseContext)
@@ -51,11 +61,26 @@ namespace dotnetApp.Services
       return member;
     }
 
-    public async Task UserLogin()
+    public bool MemberLogin()
     {
-      string data = "data";
-      _databaseContext.Add(data);
-      await _databaseContext.SaveChangesAsync();
+      string mockEmail = "chenyan@gmail.com";
+      string mockPassword = "hashedPassword";
+      var member = _databaseContext.Members.SingleOrDefault(x => x.email == mockEmail);
+      if (member == null || !this.CheckPassword(member.password, mockPassword))
+      {
+        return false;
+      }
+      return true;
+    }
+
+    public bool CheckPassword(string plain, string hash)
+    {
+      return BCrypt.Net.BCrypt.Verify(plain, hash);
+    }
+
+    public string HashPassword(string plain)
+    {
+      return BCrypt.Net.BCrypt.HashPassword(plain);
     }
   }
 }

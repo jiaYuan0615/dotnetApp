@@ -20,13 +20,18 @@ namespace dotnetApp.Controllers
   [ApiController]
   public class MemberController : ControllerBase
   {
-    private readonly MemberService _memberService;
+    private readonly IMemberService _memberService;
     private readonly JwtHelpers _jwt;
     private readonly IMapper _mapper;
 
-    public MemberController(DatabaseContext databaseContext, IMapper mapper, JwtHelpers jwt)
+    public MemberController(
+      DatabaseContext databaseContext,
+      IMapper mapper,
+      JwtHelpers jwt,
+      IMemberService memberService
+      )
     {
-      _memberService = new MemberService(databaseContext);
+      _memberService = memberService;
       _jwt = jwt;
       _mapper = mapper;
     }
