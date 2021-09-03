@@ -28,7 +28,7 @@ namespace dotnetApp.Helpers
 
       var claims = new List<Claim>();
 
-      // claims.Add(new Claim(JwtRegisteredClaimNames.Sub, "Yuan"));
+      claims.Add(new Claim(JwtRegisteredClaimNames.Sub, "Yuan"));
 
       // JWT 的唯一識別碼
       claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));

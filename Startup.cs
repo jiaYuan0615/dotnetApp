@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using dotnetApp.Context;
+using dotnetApp.Controllers;
 using dotnetApp.Helpers;
 using dotnetApp.Middlewares;
+using dotnetApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace dotnetApp
@@ -41,6 +45,14 @@ namespace dotnetApp
         options.UseMySql(ConnectionString, ServerVersion.AutoDetect(ConnectionString));
       });
 
+
+      services.AddSwaggerGen(option =>
+      {
+        option.SwaggerDoc("v1", new OpenApiInfo { Title = "歌曲推薦系統", Version = "v1" });
+        var FilePath = Path.Combine(AppContext.BaseDirectory, "dotnetApp.xml");
+        option.IncludeXmlComments(FilePath);
+      });
+
       services.AddMvc().AddJsonOptions(
         options =>
         {
@@ -55,13 +67,16 @@ namespace dotnetApp
         {
           policy.AllowAnyHeader()
           .AllowAnyMethod()
-          .AllowAnyMethod()
+          .AllowAnyOrigin()
           .AllowCredentials();
         });
       });
 
       // 解決物件多層結構不支援的問題
-      services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+      services.AddControllers().AddNewtonsoftJson(x =>
+      {
+        x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+      });
 
       // 讓 Authorization 知道要讀取 bearer 開頭的 token
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -96,6 +111,16 @@ namespace dotnetApp
       {
         app.UseDeveloperExceptionPage();
       }
+      else
+      {
+        app.UseHsts();
+      }
+
+      app.UseSwagger();
+      app.UseSwaggerUI(v =>
+      {
+        v.SwaggerEndpoint("v1/swagger.json", "My API V1");
+      });
 
       app.UseHttpsRedirection();
 

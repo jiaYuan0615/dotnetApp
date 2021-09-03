@@ -6,30 +6,31 @@ using dotnetApp.Context;
 using dotnetApp.Models;
 using dotnetApp.Repositories.User;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace dotnetApp.Services
 {
   public class MemberService
   {
-    private readonly DatabaseContext _DatabaseContext;
-    public MemberService(DatabaseContext DatabaseContext)
+    private readonly DatabaseContext _databaseContext;
+    public MemberService(DatabaseContext databaseContext)
     {
-      _DatabaseContext = DatabaseContext;
+      _databaseContext = databaseContext;
     }
 
     public IEnumerable<Member> GetMember()
     {
-      return _DatabaseContext.Members.ToList();
+      return _databaseContext.Members.ToList();
     }
-
     public Member GetAssignMember(Guid id)
     {
-      return _DatabaseContext.Members.SingleOrDefault(o => o.id == id);
+      return _databaseContext.Members.SingleOrDefault(o => o.id == id);
     }
 
     public async Task RegisterMember(RegisterRepository registerRepository)
     {
-      await _DatabaseContext.AddAsync(registerRepository);
+      _databaseContext.Add(registerRepository);
+      await _databaseContext.SaveChangesAsync();
     }
 
     public Member YieldMockData()
@@ -53,8 +54,8 @@ namespace dotnetApp.Services
     public async Task UserLogin()
     {
       string data = "data";
-      _DatabaseContext.Add(data);
-      await _DatabaseContext.SaveChangesAsync();
+      _databaseContext.Add(data);
+      await _databaseContext.SaveChangesAsync();
     }
   }
 }

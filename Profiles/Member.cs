@@ -8,6 +8,9 @@ namespace dotnetApp.Profiles
   {
     public MemberProfile()
     {
+      // Propose
+      // To inherit AutoMapper "Profile"
+
       // source -> target
       CreateMap<Member, MemberRead>();
     }
