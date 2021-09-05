@@ -23,17 +23,20 @@ namespace dotnetApp.Controllers
     private readonly IMemberService _memberService;
     private readonly JwtHelpers _jwt;
     private readonly IMapper _mapper;
+    private readonly IMailService _mailService;
 
     public MemberController(
       DatabaseContext databaseContext,
       IMapper mapper,
       JwtHelpers jwt,
-      IMemberService memberService
+      IMemberService memberService,
+      IMailService mailService
       )
     {
       _memberService = memberService;
       _jwt = jwt;
       _mapper = mapper;
+      _mailService = mailService;
     }
 
     // GET api/member
@@ -63,7 +66,8 @@ namespace dotnetApp.Controllers
       }).First();
       DateTime AfterFiveHour = DateTime.Now.AddHours(5);
       // var member = _memberService.GetMember();
-      return Ok(new { member, userId });
+      throw new AppException("輸入的內容有誤");
+      // return Ok(new { member, userId });
     }
 
     // GET api/member/{id}
@@ -91,14 +95,15 @@ namespace dotnetApp.Controllers
     [HttpPost]
     public async Task<IActionResult> RegisterMember([FromBody] RegisterRepository registerRepository)
     {
+      var member = _mapper.Map<Member>(registerRepository);
       try
       {
-        await _memberService.RegisterMember(registerRepository);
+        await _memberService.RegisterMember(member);
         return Ok(new { message = "註冊帳號成功" });
       }
-      catch (System.Exception)
+      catch (Exception)
       {
-        return BadRequest(new { message = "註冊帳號失敗" });
+        throw new AppException("輸入的內容有誤");
       }
     }
   }

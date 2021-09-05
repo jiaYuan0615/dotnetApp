@@ -15,10 +15,9 @@ namespace dotnetApp.Services
   {
     IEnumerable<Member> GetMember();
     Member GetAssignMember(Guid id);
-    bool MemberLogin();
-    Task RegisterMember(RegisterRepository registerRepository);
-    bool CheckPassword(string plain, string hash);
-    string HashPassword(string plain);
+    Task RegisterMember(Member member);
+    Task UpdateMember(Guid id, Member member);
+    Task DeleteMember(Guid id);
   }
   public class MemberService : IMemberService
   {
@@ -37,9 +36,9 @@ namespace dotnetApp.Services
       return _databaseContext.Members.SingleOrDefault(o => o.id == id);
     }
 
-    public async Task RegisterMember(RegisterRepository registerRepository)
+    public async Task RegisterMember(Member member)
     {
-      _databaseContext.Add(registerRepository);
+      _databaseContext.Members.Add(member);
       await _databaseContext.SaveChangesAsync();
     }
 
@@ -61,26 +60,19 @@ namespace dotnetApp.Services
       return member;
     }
 
-    public bool MemberLogin()
+    public Task UpdateMember(Member member)
     {
-      string mockEmail = "chenyan@gmail.com";
-      string mockPassword = "hashedPassword";
-      var member = _databaseContext.Members.SingleOrDefault(x => x.email == mockEmail);
-      if (member == null || !this.CheckPassword(member.password, mockPassword))
-      {
-        return false;
-      }
-      return true;
+      throw new NotImplementedException();
     }
 
-    public bool CheckPassword(string plain, string hash)
+    public Task UpdateMember(Guid id, Member member)
     {
-      return BCrypt.Net.BCrypt.Verify(plain, hash);
+      throw new NotImplementedException();
     }
 
-    public string HashPassword(string plain)
+    public Task DeleteMember(Guid id)
     {
-      return BCrypt.Net.BCrypt.HashPassword(plain);
+      throw new NotImplementedException();
     }
   }
 }

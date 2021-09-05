@@ -1,18 +1,20 @@
 using System.Threading.Tasks;
 using dotnetApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnetApp.Controllers
 {
   [ApiController]
+  [Authorize]
   [Route("api/[controller]")]
   public class SoundController : ControllerBase
   {
-    private readonly SoundService _soundService;
-    private readonly MemberService _memberService;
+    private readonly ISoundService _soundService;
+    private readonly IMemberService _memberService;
     public SoundController(
-      SoundService soundService,
-      MemberService memberService
+      ISoundService soundService,
+      IMemberService memberService
     )
     {
       _soundService = soundService;

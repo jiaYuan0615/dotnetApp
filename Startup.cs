@@ -66,8 +66,8 @@ namespace dotnetApp
         options.AddPolicy("CorsPolicy", policy =>
         {
           policy.AllowAnyHeader()
-          .AllowAnyMethod()
-          .AllowAnyOrigin()
+          .WithMethods("GET", "POST", "PATCH", "DELETE")
+          .SetIsOriginAllowed(origin => true)
           .AllowCredentials();
         });
       });
@@ -87,13 +87,14 @@ namespace dotnetApp
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
-          // 宣告後即可透過 User.Identity.Name 取得 "sub" 的值
-          NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
           ValidateIssuer = true,
           ValidIssuer = Configuration.GetValue<string>("JwtSettings:Issuer"),
           ValidateAudience = false,
           // 驗證有效時間
-          ValidateLifetime = true,
+          // 依照 Expires
+          ClockSkew = TimeSpan.Zero,
+          // 依照 Expires 並加上 5 分鐘
+          // ValidateLifetime = true,
 
           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
         };
@@ -101,6 +102,8 @@ namespace dotnetApp
 
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<IMemberService, MemberService>();
+      services.AddScoped<ISoundService, SoundService>();
+      services.AddScoped<IMailService, MailService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -124,6 +127,10 @@ namespace dotnetApp
       });
 
       app.UseHttpsRedirection();
+
+      app.UseErrorHandlerMiddleware();
+
+      app.UseCors();
 
       app.UseRouting();
 
