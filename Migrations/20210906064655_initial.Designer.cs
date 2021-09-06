@@ -9,8 +9,8 @@ using dotnetApp.Context;
 namespace dotnetApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210826110106_initialize")]
-    partial class initialize
+    [Migration("20210906064655_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,9 @@ namespace dotnetApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<Guid>("memberId")
                         .HasColumnType("char(36)");
 
@@ -33,7 +36,12 @@ namespace dotnetApp.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("id");
+
+                    b.HasIndex("memberId");
 
                     b.ToTable("Collections");
                 });
@@ -44,10 +52,16 @@ namespace dotnetApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
 
@@ -61,8 +75,10 @@ namespace dotnetApp.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("avatar")
-                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("email")
                         .IsRequired()
@@ -86,6 +102,9 @@ namespace dotnetApp.Migrations
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("varchar(60)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
 
@@ -114,6 +133,9 @@ namespace dotnetApp.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("gender")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -130,6 +152,9 @@ namespace dotnetApp.Migrations
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("varchar(60)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
 
@@ -151,6 +176,9 @@ namespace dotnetApp.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<bool>("isCover")
                         .HasColumnType("tinyint(1)");
 
@@ -167,9 +195,28 @@ namespace dotnetApp.Migrations
                         .HasMaxLength(4)
                         .HasColumnType("varchar(4)");
 
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("id");
 
                     b.ToTable("Sounds");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Collection", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Member", "Member")
+                        .WithMany("Collections")
+                        .HasForeignKey("memberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Member", b =>
+                {
+                    b.Navigation("Collections");
                 });
 #pragma warning restore 612, 618
         }

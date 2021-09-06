@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace dotnetApp.Models
 {
   [Table("Groups")]
-  public class Group
+  public class Group : Time
   {
     [Key]
     public Guid id { get; set; }

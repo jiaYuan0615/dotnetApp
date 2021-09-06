@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace dotnetApp.Models
 {
   [Table("Collections")]
-  public class Collection
+  public class Collection : Time
   {
     [Key]
     public Guid id { get; set; }
@@ -13,7 +13,11 @@ namespace dotnetApp.Models
     [StringLength(30)]
     public string name { get; set; }
     [Required]
-    [ForeignKey("memberId")]
+    [ForeignKey("FK_Member")]
     public Guid memberId { get; set; }
+
+    #region 關聯
+    public Member Member { get; set; }
+    #endregion
   }
 }

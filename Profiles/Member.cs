@@ -1,7 +1,6 @@
 using AutoMapper;
-using dotnetApp.Dtos;
+using dotnetApp.Dtos.Member;
 using dotnetApp.Models;
-using dotnetApp.Repositories.User;
 
 namespace dotnetApp.Profiles
 {
@@ -14,7 +13,10 @@ namespace dotnetApp.Profiles
 
       // source -> target
       CreateMap<Member, MemberRead>();
-      CreateMap<RegisterRepository, Member>();
+      CreateMap<MemberRegister, Member>();
+      CreateMap<MemberLogin, Member>();
+      CreateMap<MemberUpdate, Member>();
+      CreateMap<Member, MemberUpdate>();
     }
   }
 }

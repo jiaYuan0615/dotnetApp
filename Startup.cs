@@ -103,6 +103,7 @@ namespace dotnetApp
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<IMemberService, MemberService>();
       services.AddScoped<ISoundService, SoundService>();
+      services.AddScoped<IPasswordService, PasswordService>();
       services.AddScoped<IMailService, MailService>();
     }
 

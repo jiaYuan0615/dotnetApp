@@ -17,7 +17,7 @@ namespace dotnetApp.Helpers
       _configuration = configuration;
     }
 
-    public string yieldToken(Guid id, int expireHour = 24)
+    public string yieldToken(string id, int expireHour = 24)
     {
       // 直接取值
       // var issuer = _configuration["JwtSettings:Issuer"];
@@ -33,7 +33,7 @@ namespace dotnetApp.Helpers
       // JWT 的唯一識別碼
       claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-      claims.Add(new Claim("id", id.ToString()));
+      claims.Add(new Claim("id", id));
 
       var identify = new ClaimsIdentity(claims);
 

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Context;
 using dotnetApp.Dtos;
+using dotnetApp.Dtos.Member;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
-using dotnetApp.Repositories.User;
 using dotnetApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,19 +24,22 @@ namespace dotnetApp.Controllers
     private readonly JwtHelpers _jwt;
     private readonly IMapper _mapper;
     private readonly IMailService _mailService;
+    private readonly IPasswordService _passwordService;
 
     public MemberController(
       DatabaseContext databaseContext,
       IMapper mapper,
       JwtHelpers jwt,
       IMemberService memberService,
-      IMailService mailService
+      IMailService mailService,
+      IPasswordService passwordService
       )
     {
       _memberService = memberService;
       _jwt = jwt;
       _mapper = mapper;
       _mailService = mailService;
+      _passwordService = passwordService;
     }
 
     // GET api/member
@@ -82,8 +85,8 @@ namespace dotnetApp.Controllers
     [HttpGet("{id}")]
     public IActionResult GetAssignMember(Guid id)
     {
-      string token = _jwt.yieldToken(id);
-      var member = _memberService.GetAssignMember(id);
+      string token = _jwt.yieldToken(id.ToString());
+      var member = _memberService.GetAssignMemberById(id);
       if (member == null)
       {
         return NotFound(new { message = "找不到該使用者" });
@@ -91,11 +94,13 @@ namespace dotnetApp.Controllers
       return Ok(new { member, token });
     }
 
+
+    // POST api/member
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> RegisterMember([FromBody] RegisterRepository registerRepository)
+    public async Task<IActionResult> RegisterMember([FromBody] MemberRegister memberRegister)
     {
-      var member = _mapper.Map<Member>(registerRepository);
+      var member = _mapper.Map<Member>(memberRegister);
       try
       {
         await _memberService.RegisterMember(member);
@@ -105,6 +110,19 @@ namespace dotnetApp.Controllers
       {
         throw new AppException("輸入的內容有誤");
       }
+    }
+
+    // POST api/member/login
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] MemberLogin memberLogin)
+    {
+      var member = _memberService.GetAssignMemberByEmail(memberLogin.email);
+      if (member == null) return NotFound(new { message = "找不到該使用者" });
+      bool verified = _passwordService.CheckPassword(member.password, memberLogin.password);
+      if (!verified) throw new AppException("輸入的密碼錯誤");
+      string token = _jwt.yieldToken(member.id.ToString());
+      return Ok(new { token });
     }
   }
 }

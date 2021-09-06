@@ -4,9 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using dotnetApp.Context;
 using dotnetApp.Models;
-using dotnetApp.Repositories.User;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace dotnetApp.Services
 {
@@ -14,8 +11,9 @@ namespace dotnetApp.Services
   public interface IMemberService
   {
     IEnumerable<Member> GetMember();
-    Member GetAssignMember(Guid id);
+    Member GetAssignMemberById(Guid id);
     Task RegisterMember(Member member);
+    Member GetAssignMemberByEmail(string email);
     Task UpdateMember(Guid id, Member member);
     Task DeleteMember(Guid id);
   }
@@ -31,7 +29,7 @@ namespace dotnetApp.Services
     {
       return _databaseContext.Members.ToList();
     }
-    public Member GetAssignMember(Guid id)
+    public Member GetAssignMemberById(Guid id)
     {
       return _databaseContext.Members.SingleOrDefault(o => o.id == id);
     }
@@ -73,6 +71,12 @@ namespace dotnetApp.Services
     public Task DeleteMember(Guid id)
     {
       throw new NotImplementedException();
+    }
+
+    public Member GetAssignMemberByEmail(string email)
+    {
+      var member = _databaseContext.Members.Where(x => x.email == email).First();
+      return member;
     }
   }
 }

@@ -1,6 +1,11 @@
 namespace dotnetApp.Services
 {
-  public class PasswordService
+  public interface IPasswordService
+  {
+    bool CheckPassword(string plain, string hash);
+    string HashPassword(string plain);
+  }
+  public class PasswordService : IPasswordService
   {
     public bool CheckPassword(string plain, string hash)
     {

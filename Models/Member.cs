@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using dotnetApp.Services;
@@ -6,7 +7,7 @@ using dotnetApp.Services;
 namespace dotnetApp.Models
 {
   [Table("Members")]
-  public class Member
+  public class Member : Time
   {
     PasswordService passwordService = new PasswordService();
     private string hash;
@@ -29,15 +30,17 @@ namespace dotnetApp.Models
         hash = passwordService.HashPassword(value);
       }
     }
-    [Required]
-    public string avatar { get; set; } = "avatar";
+    public string avatar { get; set; }
     [Required]
     [StringLength(20)]
-    public string name { get; set; } = "chenyan";
+    public string name { get; set; }
     [Required]
     [StringLength(1)]
-    public string gender { get; set; } = "1";
-    [Required]
-    public DateTime email_verified { get; set; } = DateTime.Now;
+    public string gender { get; set; }
+    public DateTime email_verified { get; set; }
+
+    #region 關聯
+    public ICollection<Collection> Collections { get; set; }
+    #endregion
   }
 }

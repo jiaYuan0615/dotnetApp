@@ -1,6 +1,6 @@
 using System;
 
-namespace dotnetApp.Dtos
+namespace dotnetApp.Dtos.Member
 {
   public class MemberRead
   {
