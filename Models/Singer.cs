@@ -32,7 +32,7 @@ namespace dotnetApp.Models
     public string country { get; set; }
 
     #region Relations
-    public virtual ICollection<Sound> Sounds { get; set; }
+    public ICollection<Sound> Sounds { get; set; }
     public ICollection<Group> Groups { get; set; }
     #endregion
   }

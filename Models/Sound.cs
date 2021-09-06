@@ -26,7 +26,7 @@ namespace dotnetApp.Models
     public bool isCover { get; set; }
 
     #region Relation
-    public virtual ICollection<Singer> Singers { get; set; }
+    public ICollection<Singer> Singers { get; set; }
     public ICollection<Collection> Collections { get; set; }
     #endregion
   }
