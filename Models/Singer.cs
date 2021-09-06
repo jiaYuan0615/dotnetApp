@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,7 +18,7 @@ namespace dotnetApp.Models
     [StringLength(300)]
     public string biography { get; set; }
     [Required]
-    [ForeignKey("groupId")]
+    [ForeignKey("FK_Group")]
     public Guid groupId { get; set; }
     [Required]
     [StringLength(60)]
@@ -29,5 +30,10 @@ namespace dotnetApp.Models
     [Required]
     [StringLength(20)]
     public string country { get; set; }
+
+    #region Relations
+    public virtual ICollection<Sound> Sounds { get; set; }
+    public ICollection<Group> Groups { get; set; }
+    #endregion
   }
 }

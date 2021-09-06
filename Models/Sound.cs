@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,5 +24,10 @@ namespace dotnetApp.Models
     public string OST { get; set; }
     [Required]
     public bool isCover { get; set; }
+
+    #region Relation
+    public virtual ICollection<Singer> Singers { get; set; }
+    public ICollection<Collection> Collections { get; set; }
+    #endregion
   }
 }

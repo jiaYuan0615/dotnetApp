@@ -127,14 +127,113 @@ namespace dotnetApp.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "GroupSinger",
+                columns: table => new
+                {
+                    Groupsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Singersid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupSinger", x => new { x.Groupsid, x.Singersid });
+                    table.ForeignKey(
+                        name: "FK_GroupSinger_Groups_Groupsid",
+                        column: x => x.Groupsid,
+                        principalTable: "Groups",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupSinger_Singers_Singersid",
+                        column: x => x.Singersid,
+                        principalTable: "Singers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "SingerSound",
+                columns: table => new
+                {
+                    Singersid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Soundsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SingerSound", x => new { x.Singersid, x.Soundsid });
+                    table.ForeignKey(
+                        name: "FK_SingerSound_Singers_Singersid",
+                        column: x => x.Singersid,
+                        principalTable: "Singers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SingerSound_Sounds_Soundsid",
+                        column: x => x.Soundsid,
+                        principalTable: "Sounds",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "CollectionSound",
+                columns: table => new
+                {
+                    Collectionsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Soundsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CollectionSound", x => new { x.Collectionsid, x.Soundsid });
+                    table.ForeignKey(
+                        name: "FK_CollectionSound_Collections_Collectionsid",
+                        column: x => x.Collectionsid,
+                        principalTable: "Collections",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CollectionSound_Sounds_Soundsid",
+                        column: x => x.Soundsid,
+                        principalTable: "Sounds",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Collections_memberId",
                 table: "Collections",
                 column: "memberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CollectionSound_Soundsid",
+                table: "CollectionSound",
+                column: "Soundsid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupSinger_Singersid",
+                table: "GroupSinger",
+                column: "Singersid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SingerSound_Soundsid",
+                table: "SingerSound",
+                column: "Soundsid");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CollectionSound");
+
+            migrationBuilder.DropTable(
+                name: "GroupSinger");
+
+            migrationBuilder.DropTable(
+                name: "SingerSound");
+
             migrationBuilder.DropTable(
                 name: "Collections");
 

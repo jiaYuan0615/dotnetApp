@@ -17,6 +17,51 @@ namespace dotnetApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.9");
 
+            modelBuilder.Entity("CollectionSound", b =>
+                {
+                    b.Property<Guid>("Collectionsid")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Soundsid")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Collectionsid", "Soundsid");
+
+                    b.HasIndex("Soundsid");
+
+                    b.ToTable("CollectionSound");
+                });
+
+            modelBuilder.Entity("GroupSinger", b =>
+                {
+                    b.Property<Guid>("Groupsid")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Singersid")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Groupsid", "Singersid");
+
+                    b.HasIndex("Singersid");
+
+                    b.ToTable("GroupSinger");
+                });
+
+            modelBuilder.Entity("SingerSound", b =>
+                {
+                    b.Property<Guid>("Singersid")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("Soundsid")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Singersid", "Soundsid");
+
+                    b.HasIndex("Soundsid");
+
+                    b.ToTable("SingerSound");
+                });
+
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>
                 {
                     b.Property<Guid>("id")
@@ -199,6 +244,51 @@ namespace dotnetApp.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Sounds");
+                });
+
+            modelBuilder.Entity("CollectionSound", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Collection", null)
+                        .WithMany()
+                        .HasForeignKey("Collectionsid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Sound", null)
+                        .WithMany()
+                        .HasForeignKey("Soundsid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GroupSinger", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Group", null)
+                        .WithMany()
+                        .HasForeignKey("Groupsid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Singer", null)
+                        .WithMany()
+                        .HasForeignKey("Singersid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SingerSound", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Singer", null)
+                        .WithMany()
+                        .HasForeignKey("Singersid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Sound", null)
+                        .WithMany()
+                        .HasForeignKey("Soundsid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,6 +19,7 @@ namespace dotnetApp.Models
 
     #region 關聯
     public Member Member { get; set; }
+    public ICollection<Sound> Sounds { get; set; }
     #endregion
   }
 }
