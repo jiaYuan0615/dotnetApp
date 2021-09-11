@@ -31,9 +31,9 @@ namespace dotnetApp.Models
     [StringLength(20)]
     public string country { get; set; }
 
-    #region Relations
-    public ICollection<Sound> Sounds { get; set; }
-    public ICollection<Group> Groups { get; set; }
+    #region m:n
+    // public ICollection<Sound> Sounds { get; set; }
+    // public ICollection<Group> Groups { get; set; }
     #endregion
   }
 }

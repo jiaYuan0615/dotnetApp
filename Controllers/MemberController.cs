@@ -124,5 +124,23 @@ namespace dotnetApp.Controllers
       string token = _jwt.yieldToken(member.id.ToString());
       return Ok(new { token });
     }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateMember([FromBody] MemberUpdate memberUpdate)
+    {
+      try
+      {
+        string id = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+        var data = _memberService.GetAssignMemberById(Guid.Parse(id));
+        if (data == null) throw new NotFoundException("找不到該使用者");
+        Member member = new Member();
+        await _memberService.UpdateMember(member);
+        return Ok(new { message = "更新使用者成功" });
+      }
+      catch (Exception)
+      {
+        throw new AppException("更新使用者失敗");
+      }
+    }
   }
 }

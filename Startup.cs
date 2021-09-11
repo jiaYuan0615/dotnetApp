@@ -129,7 +129,6 @@ namespace dotnetApp
 
       app.UseHttpsRedirection();
 
-      app.UseErrorHandlerMiddleware();
 
       app.UseCors();
 
@@ -138,6 +137,8 @@ namespace dotnetApp
       app.UseAuthentication();
 
       app.UseAuthorization();
+
+      app.UseErrorHandlerMiddleware();
 
       app.UseEndpoints(endpoints =>
       {

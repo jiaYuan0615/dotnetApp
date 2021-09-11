@@ -32,6 +32,9 @@ namespace dotnetApp.Middlewares
           case AppException e:
             response.StatusCode = (int)HttpStatusCode.BadRequest;
             break;
+          case NotFoundException e:
+            response.StatusCode = (int)HttpStatusCode.NotFound;
+            break;
           default:
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
             break;

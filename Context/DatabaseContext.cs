@@ -20,5 +20,8 @@ namespace dotnetApp.Context
     public DbSet<Singer> Singers { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Collection> Collections { get; set; }
+    public DbSet<GroupSinger> GroupSingers { get; set; }
+    public DbSet<CollectionSound> CollectionSounds { get; set; }
+    public DbSet<SingerSound> SingerSounds { get; set; }
   }
 }

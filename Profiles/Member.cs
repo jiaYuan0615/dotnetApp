@@ -14,7 +14,6 @@ namespace dotnetApp.Profiles
       // source -> target
       CreateMap<Member, MemberRead>();
       CreateMap<MemberRegister, Member>();
-      CreateMap<MemberLogin, Member>();
       CreateMap<MemberUpdate, Member>();
       CreateMap<Member, MemberUpdate>();
     }

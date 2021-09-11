@@ -45,7 +45,7 @@ namespace dotnetApp.Helpers
       {
         Issuer = issuer,
         Subject = identify,
-        Expires = DateTime.Now.AddHours(30),
+        Expires = DateTime.Now.AddHours(expireHour),
         SigningCredentials = signingCredentials
       };
       var tokenHandler = new JwtSecurityTokenHandler();

@@ -14,8 +14,8 @@ namespace dotnetApp.Models
     [StringLength(50)]
     public string name { get; set; }
 
-    #region Relations
-    public ICollection<Singer> Singers { get; set; }
+    #region m:n
+    // public ICollection<Singer> Singers { get; set; }
     #endregion
   }
 }

@@ -39,7 +39,7 @@ namespace dotnetApp.Models
     public string gender { get; set; }
     public DateTime email_verified { get; set; }
 
-    #region 關聯
+    #region 1:m
     public ICollection<Collection> Collections { get; set; }
     #endregion
   }

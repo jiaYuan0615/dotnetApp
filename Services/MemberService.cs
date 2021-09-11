@@ -14,7 +14,7 @@ namespace dotnetApp.Services
     Member GetAssignMemberById(Guid id);
     Task RegisterMember(Member member);
     Member GetAssignMemberByEmail(string email);
-    Task UpdateMember(Guid id, Member member);
+    Task UpdateMember(Member member);
     Task DeleteMember(Guid id);
   }
   public class MemberService : IMemberService
@@ -58,14 +58,10 @@ namespace dotnetApp.Services
       return member;
     }
 
-    public Task UpdateMember(Member member)
+    public async Task UpdateMember(Member member)
     {
-      throw new NotImplementedException();
-    }
-
-    public Task UpdateMember(Guid id, Member member)
-    {
-      throw new NotImplementedException();
+      _databaseContext.Entry(member).CurrentValues.SetValues(member);
+      await _databaseContext.SaveChangesAsync();
     }
 
     public Task DeleteMember(Guid id)

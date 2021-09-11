@@ -17,51 +17,6 @@ namespace dotnetApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.9");
 
-            modelBuilder.Entity("CollectionSound", b =>
-                {
-                    b.Property<Guid>("Collectionsid")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("Soundsid")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Collectionsid", "Soundsid");
-
-                    b.HasIndex("Soundsid");
-
-                    b.ToTable("CollectionSound");
-                });
-
-            modelBuilder.Entity("GroupSinger", b =>
-                {
-                    b.Property<Guid>("Groupsid")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("Singersid")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Groupsid", "Singersid");
-
-                    b.HasIndex("Singersid");
-
-                    b.ToTable("GroupSinger");
-                });
-
-            modelBuilder.Entity("SingerSound", b =>
-                {
-                    b.Property<Guid>("Singersid")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("Soundsid")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Singersid", "Soundsid");
-
-                    b.HasIndex("Soundsid");
-
-                    b.ToTable("SingerSound");
-                });
-
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>
                 {
                     b.Property<Guid>("id")
@@ -69,6 +24,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("memberId")
@@ -80,6 +36,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
@@ -89,6 +46,35 @@ namespace dotnetApp.Migrations
                     b.ToTable("Collections");
                 });
 
+            modelBuilder.Entity("dotnetApp.Models.CollectionSound", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("collectionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("soundId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("collectionId");
+
+                    b.HasIndex("soundId");
+
+                    b.ToTable("Collection_Sound");
+                });
+
             modelBuilder.Entity("dotnetApp.Models.Group", b =>
                 {
                     b.Property<Guid>("id")
@@ -96,6 +82,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("name")
@@ -104,11 +91,41 @@ namespace dotnetApp.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.GroupSinger", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("groupId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("singerId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("groupId");
+
+                    b.HasIndex("singerId");
+
+                    b.ToTable("Group_Singer");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Member", b =>
@@ -121,6 +138,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("email")
@@ -147,6 +165,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("varchar(60)");
 
                     b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
@@ -177,6 +196,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("varchar(20)");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("gender")
@@ -197,11 +217,41 @@ namespace dotnetApp.Migrations
                         .HasColumnType("varchar(60)");
 
                     b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
 
                     b.ToTable("Singers");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.SingerSound", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("singerId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("soundId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("singerId");
+
+                    b.HasIndex("soundId");
+
+                    b.ToTable("Singer_Sound");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Sound", b =>
@@ -220,6 +270,7 @@ namespace dotnetApp.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("isCover")
@@ -239,56 +290,12 @@ namespace dotnetApp.Migrations
                         .HasColumnType("varchar(4)");
 
                     b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("id");
 
                     b.ToTable("Sounds");
-                });
-
-            modelBuilder.Entity("CollectionSound", b =>
-                {
-                    b.HasOne("dotnetApp.Models.Collection", null)
-                        .WithMany()
-                        .HasForeignKey("Collectionsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dotnetApp.Models.Sound", null)
-                        .WithMany()
-                        .HasForeignKey("Soundsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GroupSinger", b =>
-                {
-                    b.HasOne("dotnetApp.Models.Group", null)
-                        .WithMany()
-                        .HasForeignKey("Groupsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dotnetApp.Models.Singer", null)
-                        .WithMany()
-                        .HasForeignKey("Singersid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SingerSound", b =>
-                {
-                    b.HasOne("dotnetApp.Models.Singer", null)
-                        .WithMany()
-                        .HasForeignKey("Singersid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dotnetApp.Models.Sound", null)
-                        .WithMany()
-                        .HasForeignKey("Soundsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>
@@ -300,6 +307,63 @@ namespace dotnetApp.Migrations
                         .IsRequired();
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.CollectionSound", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Collection", "Collection")
+                        .WithMany()
+                        .HasForeignKey("collectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Sound", "Sound")
+                        .WithMany()
+                        .HasForeignKey("soundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collection");
+
+                    b.Navigation("Sound");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.GroupSinger", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("groupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Singer", "Singer")
+                        .WithMany()
+                        .HasForeignKey("singerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Singer");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.SingerSound", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Singer", "Singer")
+                        .WithMany()
+                        .HasForeignKey("singerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Sound", "Sound")
+                        .WithMany()
+                        .HasForeignKey("soundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Singer");
+
+                    b.Navigation("Sound");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Member", b =>

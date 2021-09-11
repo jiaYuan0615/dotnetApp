@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnetApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class initialize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,8 +18,10 @@ namespace dotnetApp.Migrations
                     id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
@@ -42,8 +45,10 @@ namespace dotnetApp.Migrations
                     gender = table.Column<string>(type: "varchar(1)", maxLength: 1, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     email_verified = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
@@ -70,8 +75,10 @@ namespace dotnetApp.Migrations
                     birth = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     country = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
@@ -95,8 +102,10 @@ namespace dotnetApp.Migrations
                     OST = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     isCover = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
@@ -112,8 +121,10 @@ namespace dotnetApp.Migrations
                     name = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     memberId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
@@ -128,24 +139,29 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "GroupSinger",
+                name: "Group_Singer",
                 columns: table => new
                 {
-                    Groupsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Singersid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    groupId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    singerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupSinger", x => new { x.Groupsid, x.Singersid });
+                    table.PrimaryKey("PK_Group_Singer", x => x.id);
                     table.ForeignKey(
-                        name: "FK_GroupSinger_Groups_Groupsid",
-                        column: x => x.Groupsid,
+                        name: "FK_Group_Singer_Groups_groupId",
+                        column: x => x.groupId,
                         principalTable: "Groups",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupSinger_Singers_Singersid",
-                        column: x => x.Singersid,
+                        name: "FK_Group_Singer_Singers_singerId",
+                        column: x => x.singerId,
                         principalTable: "Singers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -153,24 +169,29 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "SingerSound",
+                name: "Singer_Sound",
                 columns: table => new
                 {
-                    Singersid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Soundsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    singerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    soundId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SingerSound", x => new { x.Singersid, x.Soundsid });
+                    table.PrimaryKey("PK_Singer_Sound", x => x.id);
                     table.ForeignKey(
-                        name: "FK_SingerSound_Singers_Singersid",
-                        column: x => x.Singersid,
+                        name: "FK_Singer_Sound_Singers_singerId",
+                        column: x => x.singerId,
                         principalTable: "Singers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SingerSound_Sounds_Soundsid",
-                        column: x => x.Soundsid,
+                        name: "FK_Singer_Sound_Sounds_soundId",
+                        column: x => x.soundId,
                         principalTable: "Sounds",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -178,29 +199,44 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CollectionSound",
+                name: "Collection_Sound",
                 columns: table => new
                 {
-                    Collectionsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Soundsid = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    collectionId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    soundId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CollectionSound", x => new { x.Collectionsid, x.Soundsid });
+                    table.PrimaryKey("PK_Collection_Sound", x => x.id);
                     table.ForeignKey(
-                        name: "FK_CollectionSound_Collections_Collectionsid",
-                        column: x => x.Collectionsid,
+                        name: "FK_Collection_Sound_Collections_collectionId",
+                        column: x => x.collectionId,
                         principalTable: "Collections",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CollectionSound_Sounds_Soundsid",
-                        column: x => x.Soundsid,
+                        name: "FK_Collection_Sound_Sounds_soundId",
+                        column: x => x.soundId,
                         principalTable: "Sounds",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Collection_Sound_collectionId",
+                table: "Collection_Sound",
+                column: "collectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Collection_Sound_soundId",
+                table: "Collection_Sound",
+                column: "soundId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Collections_memberId",
@@ -208,31 +244,36 @@ namespace dotnetApp.Migrations
                 column: "memberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CollectionSound_Soundsid",
-                table: "CollectionSound",
-                column: "Soundsid");
+                name: "IX_Group_Singer_groupId",
+                table: "Group_Singer",
+                column: "groupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupSinger_Singersid",
-                table: "GroupSinger",
-                column: "Singersid");
+                name: "IX_Group_Singer_singerId",
+                table: "Group_Singer",
+                column: "singerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SingerSound_Soundsid",
-                table: "SingerSound",
-                column: "Soundsid");
+                name: "IX_Singer_Sound_singerId",
+                table: "Singer_Sound",
+                column: "singerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Singer_Sound_soundId",
+                table: "Singer_Sound",
+                column: "soundId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CollectionSound");
+                name: "Collection_Sound");
 
             migrationBuilder.DropTable(
-                name: "GroupSinger");
+                name: "Group_Singer");
 
             migrationBuilder.DropTable(
-                name: "SingerSound");
+                name: "Singer_Sound");
 
             migrationBuilder.DropTable(
                 name: "Collections");

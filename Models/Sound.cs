@@ -25,9 +25,9 @@ namespace dotnetApp.Models
     [Required]
     public bool isCover { get; set; }
 
-    #region Relation
-    public ICollection<Singer> Singers { get; set; }
-    public ICollection<Collection> Collections { get; set; }
+    #region m:n
+    // public ICollection<Singer> Singers { get; set; }
+    // public ICollection<Collection> Collections { get; set; }
     #endregion
   }
 }

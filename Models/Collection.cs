@@ -17,9 +17,11 @@ namespace dotnetApp.Models
     [ForeignKey("FK_Member")]
     public Guid memberId { get; set; }
 
-    #region 關聯
+    #region belongs
     public Member Member { get; set; }
-    public ICollection<Sound> Sounds { get; set; }
+    #endregion
+    #region m:n
+    // public ICollection<Sound> Sounds { get; set; }
     #endregion
   }
 }
