@@ -9,7 +9,8 @@ namespace dotnetApp.Models
   public class Sound : Time
   {
     [Key]
-    public Guid id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid id { get; set; } = Guid.NewGuid();
     [Required]
     [StringLength(60)]
     public string name { get; set; }

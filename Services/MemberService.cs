@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotnetApp.Context;
+using dotnetApp.Dtos.Member;
 using dotnetApp.Models;
 
 namespace dotnetApp.Services
@@ -14,8 +15,8 @@ namespace dotnetApp.Services
     Member GetAssignMemberById(Guid id);
     Task RegisterMember(Member member);
     Member GetAssignMemberByEmail(string email);
-    Task UpdateMember(Member member);
-    Task DeleteMember(Guid id);
+    Task UpdateMember(Member member, MemberUpdate memberUpdate);
+    Task DeleteMember(Member member);
   }
   public class MemberService : IMemberService
   {
@@ -58,15 +59,19 @@ namespace dotnetApp.Services
       return member;
     }
 
-    public async Task UpdateMember(Member member)
+    public async Task UpdateMember(Member member, MemberUpdate memberUpdate)
     {
-      _databaseContext.Entry(member).CurrentValues.SetValues(member);
+      _databaseContext.Entry(member).CurrentValues.SetValues(memberUpdate);
       await _databaseContext.SaveChangesAsync();
     }
-
-    public Task DeleteMember(Guid id)
+    public async Task UpdateMember()
     {
-      throw new NotImplementedException();
+      await _databaseContext.SaveChangesAsync();
+    }
+    public async Task DeleteMember(Member member)
+    {
+      _databaseContext.Members.Remove(member);
+      await _databaseContext.SaveChangesAsync();
     }
 
     public Member GetAssignMemberByEmail(string email)

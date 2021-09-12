@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using dotnetApp.Context;
+using dotnetApp.Dtos.Sound;
 using dotnetApp.Models;
 
 namespace dotnetApp.Services
@@ -11,8 +13,8 @@ namespace dotnetApp.Services
     Sound GetAssignSound(Guid id);
     IEnumerable<Sound> GetSound();
     Task CreateSound(Sound sound);
-    Task UpdateSound(Guid id, Sound sound);
-    Task DeleteSound(Guid id);
+    Task UpdateSound(Sound sound, SoundUpdate soundUpdate);
+    Task DeleteSound(Sound sound);
   }
   public class SoundService : ISoundService
   {
@@ -28,24 +30,37 @@ namespace dotnetApp.Services
       await _databaseContext.SaveChangesAsync();
     }
 
-    public Task DeleteSound(Guid id)
+    public async Task DeleteSound(Sound sound)
     {
-      throw new NotImplementedException();
+      _databaseContext.Sounds.Remove(sound);
+      await _databaseContext.SaveChangesAsync();
     }
 
     public Sound GetAssignSound(Guid id)
     {
-      throw new NotImplementedException();
+      var sound = _databaseContext.Sounds.SingleOrDefault(o => o.id == id);
+      return sound;
     }
 
     public IEnumerable<Sound> GetSound()
     {
-      throw new NotImplementedException();
+      var sound = _databaseContext.Sounds.ToList();
+      return sound;
+    }
+    public IEnumerable<Sound> GetSound(bool isCover)
+    {
+      var sound = _databaseContext.Sounds.Where(o => o.isCover == isCover).ToList();
+      return sound;
     }
 
-    public Task UpdateSound(Guid id, Sound sound)
+    public async Task UpdateSound(Sound sound, SoundUpdate soundUpdate)
     {
-      throw new NotImplementedException();
+      _databaseContext.Entry(sound).CurrentValues.SetValues(soundUpdate);
+      await _databaseContext.SaveChangesAsync();
+    }
+    public async Task UpdateSound()
+    {
+      await _databaseContext.SaveChangesAsync();
     }
   }
 }

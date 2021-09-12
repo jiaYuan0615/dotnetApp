@@ -9,9 +9,8 @@ namespace dotnetApp.Models
   [Table("Members")]
   public class Member : Time
   {
-    PasswordService passwordService = new PasswordService();
-    private string hash;
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid id { get; set; } = Guid.NewGuid();
     [Required]
     [EmailAddress]
@@ -19,17 +18,7 @@ namespace dotnetApp.Models
     public string email { get; set; }
     [Required]
     [StringLength(60)]
-    public string password
-    {
-      get
-      {
-        return hash;
-      }
-      set
-      {
-        hash = passwordService.HashPassword(value);
-      }
-    }
+    public string password { get; set; }
     public string avatar { get; set; }
     [Required]
     [StringLength(20)]
@@ -37,7 +26,7 @@ namespace dotnetApp.Models
     [Required]
     [StringLength(1)]
     public string gender { get; set; }
-    public DateTime email_verified { get; set; }
+    public DateTime? email_verified { get; set; }
 
     #region 1:m
     public ICollection<Collection> Collections { get; set; }

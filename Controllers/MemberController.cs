@@ -50,27 +50,28 @@ namespace dotnetApp.Controllers
     /// <response code="200">所有使用者資訊</response>
     [HttpGet]
     // Filter
-    public IActionResult GetMockMember()
+    public IActionResult GetMember()
     {
       // string[] data = new[] { "1", "2" };
       // List<string> datas = new List<string> { "2", "4" };
-      string userId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      string currentUserId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
       // var members = _memberService.GetAssignMember(Guid.Parse(userId));
-      // var data = _memberService.GetMember();
-      // var useDto = _mapper.Map<IEnumerable<MemberRead>>(data);
-      List<Member> members = new List<Member>
-        {
-          new Member{id =Guid.NewGuid(),email="chenyan@gmail.com",password="password",avatar="avatar",name="辰諺",gender="男",email_verified=DateTime.Now.AddHours(1) }
-        };
-      var member = _memberService.GetMember().Select(x => new
-      {
-        id = x.id,
-        gender = x.gender == "男" ? "1" : "0",
-      }).First();
-      DateTime AfterFiveHour = DateTime.Now.AddHours(5);
+      var data = _memberService.GetMember();
+      var member = _mapper.Map<IEnumerable<MemberRead>>(data);
+      // List<Member> members = new List<Member>
+      //   {
+      //     new Member{id =Guid.NewGuid(),email="chenyan@gmail.com",password="password",avatar="avatar",name="辰諺",gender="男",email_verified=DateTime.Now.AddHours(1) }
+      //   };
+      // var mockData = _memberService.GetMember().Select(x => new
+      // {
+      //   id = x.id,
+      //   gender = x.gender == "男" ? "1" : "0",
+      // }).First();
+      // DateTime AfterFiveHour = DateTime.Now.AddHours(5);
       // var member = _memberService.GetMember();
-      throw new AppException("輸入的內容有誤");
+      // throw new AppException("輸入的內容有誤");
       // return Ok(new { member, userId });
+      return Ok(new { member });
     }
 
     // GET api/member/{id}
@@ -85,13 +86,10 @@ namespace dotnetApp.Controllers
     [HttpGet("{id}")]
     public IActionResult GetAssignMember(Guid id)
     {
-      string token = _jwt.yieldToken(id.ToString());
-      var member = _memberService.GetAssignMemberById(id);
-      if (member == null)
-      {
-        return NotFound(new { message = "找不到該使用者" });
-      }
-      return Ok(new { member, token });
+      var data = _memberService.GetAssignMemberById(id);
+      if (data == null) return NotFound(new { message = "找不到該使用者" });
+      var member = _mapper.Map<MemberRead>(data);
+      return Ok(new { member });
     }
 
 
@@ -100,9 +98,9 @@ namespace dotnetApp.Controllers
     [HttpPost]
     public async Task<IActionResult> RegisterMember([FromBody] MemberRegister memberRegister)
     {
-      var member = _mapper.Map<Member>(memberRegister);
       try
       {
+        var member = _mapper.Map<Member>(memberRegister);
         await _memberService.RegisterMember(member);
         return Ok(new { message = "註冊帳號成功" });
       }
@@ -119,8 +117,8 @@ namespace dotnetApp.Controllers
     {
       var member = _memberService.GetAssignMemberByEmail(memberLogin.email);
       if (member == null) return NotFound(new { message = "找不到該使用者" });
-      bool verified = _passwordService.CheckPassword(member.password, memberLogin.password);
-      if (!verified) throw new AppException("輸入的密碼錯誤");
+      bool verified = _passwordService.CheckPassword(memberLogin.password, member.password);
+      if (!verified) throw new AppException("輸入的密碼有誤");
       string token = _jwt.yieldToken(member.id.ToString());
       return Ok(new { token });
     }
@@ -133,8 +131,11 @@ namespace dotnetApp.Controllers
         string id = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
         var data = _memberService.GetAssignMemberById(Guid.Parse(id));
         if (data == null) throw new NotFoundException("找不到該使用者");
-        Member member = new Member();
-        await _memberService.UpdateMember(member);
+        // 更新資料的兩種方法
+        // 需要把要更新的資料補滿
+        // _mapper.Map(memberUpdate, data);
+        // await _memberService.UpdateMember();
+        await _memberService.UpdateMember(data, memberUpdate);
         return Ok(new { message = "更新使用者成功" });
       }
       catch (Exception)
