@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Dtos.Sound;
@@ -31,7 +32,7 @@ namespace dotnetApp.Controllers
     }
 
     [HttpGet]
-    public IActionResult getSound()
+    public IActionResult GetSound()
     {
       var data = _soundService.GetSound();
       var sound = _mapper.Map<IEnumerable<Sound>>(data);
@@ -39,7 +40,7 @@ namespace dotnetApp.Controllers
     }
 
     [HttpGet("{id}")]
-    public IActionResult getAssignSound(string id)
+    public IActionResult GetAssignSound(string id)
     {
       var sound = _soundService.GetAssignSound(Guid.Parse(id));
       if (sound == null) return NotFound(new { message = "找不到該歌曲" });
@@ -48,17 +49,49 @@ namespace dotnetApp.Controllers
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> postSound([FromBody] SoundCreate soundCreate)
+    public async Task<IActionResult> PostSound([FromBody] SoundCreate soundCreate)
     {
       try
       {
         var sound = _mapper.Map<Sound>(soundCreate);
-        await _soundService.CreateSound(sound);
+        await _soundService.PostSound(sound);
         return Ok(new { message = "新增歌曲成功" });
       }
       catch (Exception)
       {
         throw new AppException("輸入的內容有誤");
+      }
+    }
+
+    [HttpPut("id")]
+    public async Task<IActionResult> UpdateSound(string id, [FromBody] SoundUpdate soundUpdate)
+    {
+      try
+      {
+        var sound = _soundService.GetAssignSound(Guid.Parse(id));
+        if (sound == null) throw new NotFoundException("找不到該歌曲");
+        await _soundService.UpdateSound(sound, soundUpdate);
+        return Ok(new { message = "更新歌曲成功" });
+      }
+      catch (Exception)
+      {
+        throw new AppException("更新歌曲失敗");
+      }
+    }
+
+    [HttpDelete("id")]
+    public async Task<IActionResult> DeleteSound(string id)
+    {
+      try
+      {
+        var sound = _soundService.GetAssignSound(Guid.Parse(id));
+        if (sound == null) throw new NotFoundException("找不到該歌曲");
+        await _soundService.DeleteSound(sound);
+        return Ok(new { message = "刪除歌曲成功" });
+      }
+      catch (Exception)
+      {
+        throw new AppException("刪除歌曲失敗");
       }
     }
   }

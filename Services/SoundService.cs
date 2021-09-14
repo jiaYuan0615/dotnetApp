@@ -12,7 +12,7 @@ namespace dotnetApp.Services
   {
     Sound GetAssignSound(Guid id);
     IEnumerable<Sound> GetSound();
-    Task CreateSound(Sound sound);
+    Task PostSound(Sound sound);
     Task UpdateSound(Sound sound, SoundUpdate soundUpdate);
     Task DeleteSound(Sound sound);
   }
@@ -24,7 +24,7 @@ namespace dotnetApp.Services
       _databaseContext = databaseContext;
     }
 
-    public async Task CreateSound(Sound sound)
+    public async Task PostSound(Sound sound)
     {
       _databaseContext.Sounds.Add(sound);
       await _databaseContext.SaveChangesAsync();
@@ -53,13 +53,14 @@ namespace dotnetApp.Services
       return sound;
     }
 
+    public async Task UpdateSound()
+    {
+      await _databaseContext.SaveChangesAsync();
+    }
+
     public async Task UpdateSound(Sound sound, SoundUpdate soundUpdate)
     {
       _databaseContext.Entry(sound).CurrentValues.SetValues(soundUpdate);
-      await _databaseContext.SaveChangesAsync();
-    }
-    public async Task UpdateSound()
-    {
       await _databaseContext.SaveChangesAsync();
     }
   }

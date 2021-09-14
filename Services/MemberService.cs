@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using dotnetApp.Context;
 using dotnetApp.Dtos.Member;
 using dotnetApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
 {
