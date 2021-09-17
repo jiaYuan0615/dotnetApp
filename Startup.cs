@@ -58,8 +58,7 @@ namespace dotnetApp
         {
           policy.AllowAnyHeader()
           .AllowAnyMethod()
-          .SetIsOriginAllowed(origin => true)
-          .AllowCredentials();
+          .AllowAnyOrigin();
         });
       });
 
@@ -105,7 +104,7 @@ namespace dotnetApp
         // }
         // };
       });
-      services.AddScoped(typeof(CustomAuthorization));
+      // services.AddScoped(typeof(CustomAuthorization));
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<IMemberService, MemberService>();
       services.AddScoped<ISoundService, SoundService>();
@@ -132,7 +131,7 @@ namespace dotnetApp
 
       app.UseHttpsRedirection();
 
-      app.UseCors();
+      app.UseCors("CorsPolicy");
 
       app.UseRouting();
 

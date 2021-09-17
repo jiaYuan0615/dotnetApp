@@ -35,8 +35,8 @@ namespace dotnetApp.Controllers
     public IActionResult GetSound()
     {
       var data = _soundService.GetSound();
-      var sound = _mapper.Map<IEnumerable<Sound>>(data);
-      return Ok(new { sound });
+      var sounds = _mapper.Map<IEnumerable<Sound>>(data);
+      return Ok(new { sounds });
     }
 
     [HttpGet("{id}")]

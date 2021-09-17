@@ -48,8 +48,10 @@ namespace dotnetApp.Controllers
     /// </summary>
     /// <returns>所有使用者</returns>
     /// <response code="200">所有使用者資訊</response>
-    // 使用 ServiceFilter 可以從 DI 容器取得實例
-    [ServiceFilter(typeof(CustomAuthorization))]
+    // 使用 ServiceFilter 需先在DI 容器註冊後，才可以從 DI 容器中取得實例
+    // 使用 TypeFilter 可以自動取得 DI 容器的實例
+    // [ServiceFilter(typeof(CustomAuthorization))]
+    [TypeFilter(typeof(CustomAuthorization))]
     [HttpGet]
     public IActionResult GetMember()
     {
