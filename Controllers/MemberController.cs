@@ -16,7 +16,7 @@ namespace dotnetApp.Controllers
 {
   [Authorize]
   [Route("api/[controller]")]
-  [Produces("application/json")]
+  [Consumes("application/json")]
   [ApiController]
   public class MemberController : ControllerBase
   {
@@ -111,7 +111,8 @@ namespace dotnetApp.Controllers
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateMember([FromBody] MemberUpdate memberUpdate)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UpdateMember([FromForm] MemberUpdate memberUpdate)
     {
       try
       {

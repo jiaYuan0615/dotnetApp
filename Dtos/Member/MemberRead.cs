@@ -1,4 +1,5 @@
 using System;
+using dotnetApp.Dtos.Collection;
 
 namespace dotnetApp.Dtos.Member
 {
@@ -9,6 +10,5 @@ namespace dotnetApp.Dtos.Member
     public string avatar { get; set; }
     public string name { get; set; }
     public string gender { get; set; }
-
   }
 }

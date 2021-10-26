@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using dotnetApp.Context;
-using dotnetApp.Filters;
 using dotnetApp.Helpers;
 using dotnetApp.Middlewares;
 using dotnetApp.Services;
@@ -107,6 +106,9 @@ namespace dotnetApp
       // services.AddScoped(typeof(CustomAuthorization));
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<IMemberService, MemberService>();
+      services.AddScoped<ICollectionService, CollectionService>();
+      services.AddScoped<ISingerService, SingerService>();
+      services.AddScoped<IGroupService, GroupService>();
       services.AddScoped<ISoundService, SoundService>();
       services.AddScoped<IPasswordService, PasswordService>();
       services.AddScoped<IMailService, MailService>();

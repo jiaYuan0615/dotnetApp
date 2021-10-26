@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Dtos.Sound;
@@ -14,6 +15,7 @@ namespace dotnetApp.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
+  [Consumes("application/json")]
   public class SoundController : ControllerBase
   {
     private readonly ISoundService _soundService;
@@ -49,7 +51,7 @@ namespace dotnetApp.Controllers
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> PostSound([FromBody] SoundCreate soundCreate)
+    public async Task<IActionResult> PostSound([FromForm] SoundCreate soundCreate)
     {
       try
       {

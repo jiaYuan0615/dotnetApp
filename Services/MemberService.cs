@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using dotnetApp.Context;
+using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
 using dotnetApp.Models;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,7 @@ namespace dotnetApp.Services
   public class MemberService : IMemberService
   {
     private readonly DatabaseContext _databaseContext;
+
     public MemberService(DatabaseContext databaseContext)
     {
       _databaseContext = databaseContext;
@@ -29,6 +32,9 @@ namespace dotnetApp.Services
 
     public IEnumerable<Member> GetMember()
     {
+      var member = _databaseContext.Members
+                .Include(x => x.Collections)
+                .ToList();
       return _databaseContext.Members.ToList();
     }
     public Member GetAssignMemberById(Guid id)
