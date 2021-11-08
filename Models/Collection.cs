@@ -8,7 +8,7 @@ namespace dotnetApp.Models
   public class Collection : Time
   {
     [Key]
-    public Guid id { get; set; }
+    public Guid id { get; set; } = Guid.NewGuid();
     [Required]
     [StringLength(30)]
     public string name { get; set; }

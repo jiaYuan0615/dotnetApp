@@ -6,6 +6,8 @@ using AutoMapper;
 using dotnetApp.Context;
 using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
+using dotnetApp.Dvos.Member;
+using dotnetApp.Helpers;
 using dotnetApp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +16,15 @@ namespace dotnetApp.Services
 
   public interface IMemberService
   {
-    IEnumerable<Member> GetMember();
+    List<Member> GetMember();
     Member GetAssignMemberById(Guid id);
     Task RegisterMember(Member member);
     Member GetAssignMemberByEmail(string email);
     Task UpdateMember(Member member, MemberUpdate memberUpdate);
     Task DeleteMember(Member member);
+    List<Member> GetMemberCollectionItem(string id);
+    List<MemberCollection> GetMemberCollection(string id);
+    List<MemberCollection> GetMemberCollection();
   }
   public class MemberService : IMemberService
   {
@@ -30,7 +35,7 @@ namespace dotnetApp.Services
       _databaseContext = databaseContext;
     }
 
-    public IEnumerable<Member> GetMember()
+    public List<Member> GetMember()
     {
       var member = _databaseContext.Members
                 .Include(x => x.Collections)
@@ -84,6 +89,56 @@ namespace dotnetApp.Services
     public Member GetAssignMemberByEmail(string email)
     {
       var member = _databaseContext.Members.Where(x => x.email == email).First();
+      return member;
+    }
+
+    public List<Member> GetMemberCollectionItem(string id)
+    {
+      // using orm
+      List<Member> member = _databaseContext.Members
+      .Include(x => x.Collections)
+      .ToList();
+      return member;
+    }
+
+    public List<MemberCollection> GetMemberCollection(string id)
+    {
+      // using pure sql command
+      string sql = $@"
+      SELECT
+        Members.id,
+        Members.email,
+        Members.`name`,
+        Members.gender,
+        Collections.id AS collectionId,
+        Collections.`name` AS collectionName
+      FROM
+        Members
+        LEFT JOIN Collections ON Collections.memberId = Members.id
+      WHERE
+        Members.id = '{id}'";
+      var member = _databaseContext.MemberCollections
+      .FromSqlRaw(sql)
+      .ToList();
+      return member;
+    }
+
+    public List<MemberCollection> GetMemberCollection()
+    {
+      string sql = $@"
+      SELECT
+        Members.id,
+        Members.email,
+        Members.`name`,
+        Members.gender,
+        Collections.id AS collectionId,
+        Collections.`name` AS collectionName
+      FROM
+        Members
+        LEFT JOIN Collections ON Collections.memberId = Members.id";
+      var member = _databaseContext.MemberCollections
+      .FromSqlRaw(sql)
+      .ToList();
       return member;
     }
   }

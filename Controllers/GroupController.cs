@@ -31,12 +31,17 @@ namespace dotnetApp.Controllers
       _groupService = groupService;
     }
 
-
+    // GET api/group
+    /// <summary>
+    /// 查詢所有團體
+    /// </summary>
+    /// <returns>所有團體</returns>
+    /// <response code="200">所有團體資訊</response>
     [HttpGet]
     public IActionResult GetGroup()
     {
       var data = _groupService.GetGroup();
-      var group = _mapper.Map<IEnumerable<GroupRead>>(data);
+      var group = _mapper.Map<List<GroupRead>>(data);
       return Ok(new { group });
     }
 

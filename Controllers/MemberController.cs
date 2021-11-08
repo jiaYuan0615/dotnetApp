@@ -4,14 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Context;
+using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
+using dotnetApp.Dvos.Member;
 using dotnetApp.Filters;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
 using dotnetApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
+// Controller
+// 處理商業邏輯
+// 整理資料結構
 namespace dotnetApp.Controllers
 {
   [Authorize]
@@ -25,6 +31,7 @@ namespace dotnetApp.Controllers
     private readonly IMapper _mapper;
     private readonly IMailService _mailService;
     private readonly IPasswordService _passwordService;
+    private readonly ILogger<MemberController> _logger;
 
     public MemberController(
       DatabaseContext databaseContext,
@@ -32,7 +39,8 @@ namespace dotnetApp.Controllers
       JwtHelpers jwt,
       IMemberService memberService,
       IMailService mailService,
-      IPasswordService passwordService
+      IPasswordService passwordService,
+      ILogger<MemberController> logger
       )
     {
       _memberService = memberService;
@@ -40,6 +48,7 @@ namespace dotnetApp.Controllers
       _mapper = mapper;
       _mailService = mailService;
       _passwordService = passwordService;
+      _logger = logger;
     }
 
     // GET api/member
@@ -55,9 +64,47 @@ namespace dotnetApp.Controllers
     [HttpGet]
     public IActionResult GetMember()
     {
-      string currentUserId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-      var data = _memberService.GetMember();
-      var member = _mapper.Map<IEnumerable<MemberRead>>(data);
+      string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      List<Member> data = _memberService.GetMember();
+      var member = _mapper.Map<List<MemberRead>>(data);
+      return Ok(new { member });
+    }
+
+    // GET api/member/collection
+    [TypeFilter(typeof(CustomAuthorization))]
+    [HttpGet("collection")]
+    public IActionResult GetMemberCollection()
+    {
+      List<MemberCollection> data = _memberService.GetMemberCollection();
+
+      var member = data
+      .GroupBy(x => x.id)
+      .Select(x => _mapper.Map<MemberCollections>(x));
+      return Ok(new { member });
+    }
+
+    // GET api/member/personal
+    [TypeFilter(typeof(CustomAuthorization))]
+    [HttpGet("personal")]
+    public IActionResult GetPersonalCollection()
+    {
+      string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      List<MemberCollection> data = _memberService.GetMemberCollection(memberId);
+      var member = data
+      .GroupBy(x => x.id)
+      .Select(x =>
+      {
+        MemberCollection member = x.FirstOrDefault();
+        List<CollectionRead> item = x.Select(v => new CollectionRead { id = v.collectionId.ToString(), name = v.collectionName }).ToList();
+        return new MemberCollections
+        {
+          id = member.id.ToString(),
+          email = member.email,
+          name = member.name,
+          gender = member.gender,
+          collections = item
+        };
+      }).FirstOrDefault();
       return Ok(new { member });
     }
 

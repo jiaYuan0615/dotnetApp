@@ -41,9 +41,9 @@ namespace dotnetApp.Services
     public IEnumerable<Collection> GetCollection(Guid id)
     {
       var collection = _databaseContext.Collections
-                        .AsNoTracking()
-                        .Where(x => x.memberId == id)
-                        .ToList();
+      .AsNoTracking()
+      .Where(x => x.memberId == id)
+      .ToList();
       return collection;
     }
 

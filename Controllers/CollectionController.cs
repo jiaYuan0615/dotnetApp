@@ -37,7 +37,7 @@ namespace dotnetApp.Controllers
       string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
       var data = _collectionService.GetCollection(Guid.Parse(memberId));
       var collection = _mapper.Map<IEnumerable<CollectionRead>>(data);
-      return Ok(new { collection });
+      return Ok(new { data });
     }
 
     [HttpPost]

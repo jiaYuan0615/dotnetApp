@@ -11,7 +11,7 @@ namespace dotnetApp.Services
 {
   public interface IGroupService
   {
-    IEnumerable<Group> GetGroup();
+    List<Group> GetGroup();
     Group GetAssignGroup(Guid id);
     Task PostGroup(Group group);
     Task UpdateGroup(Group group, GroupUpdate groupUpdate);
@@ -36,9 +36,11 @@ namespace dotnetApp.Services
       return _databaseContext.Groups.Find(id);
     }
 
-    public IEnumerable<Group> GetGroup()
+    public List<Group> GetGroup()
     {
-      return _databaseContext.Groups.AsNoTracking().ToList();
+      return _databaseContext.Groups
+              .AsNoTracking()
+              .ToList();
     }
 
     public async Task PostGroup(Group group)
