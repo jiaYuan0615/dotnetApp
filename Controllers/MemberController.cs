@@ -78,9 +78,10 @@ namespace dotnetApp.Controllers
     {
       List<MemberCollection> data = _memberService.GetMemberCollection();
 
-      // Same as js Object.Keys return array of object keys
-      var obj = typeof(MemberCollection).GetProperties();
-      IEnumerable<string> keys = obj.Select((x) => x.Name);
+      // Same as js object.Keys method
+      // Need pass object data to function that work normally
+      MemberCollection item = data.FirstOrDefault();
+      var objKey = CommonHelpers.objectKeys(item);
 
       var member = data
       .GroupBy(x => x.id)

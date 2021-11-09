@@ -6,6 +6,14 @@ namespace dotnetApp.Helpers
 {
   public class CommonHelpers
   {
+    // Same as js Object.Keys return array of object keys
+    public static IEnumerable<string> objectKeys<T>(T data)
+    {
+      var item = typeof(T).GetProperties();
+      IEnumerable<string> items = item.Select(x => x.Name);
+      return items;
+    }
+
     // 判斷是否有需要更新關聯表的內容
     public static IEnumerable<T> xor<T>(List<T> origin, List<T> update)
     {

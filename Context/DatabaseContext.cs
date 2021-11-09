@@ -1,4 +1,5 @@
 using dotnetApp.Models;
+using dotnetApp.Models.GroupJoin;
 using dotnetApp.Models.MemberJoin;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace dotnetApp.Context
       // 外鍵關聯已經抽到 model 做完
       // 查詢會員收藏項目
       builder.Entity<MemberCollection>().HasNoKey();
+      builder.Entity<GroupSinger>().HasNoKey();
     }
 
     // 要使用 ORM CRUD 前需要在這邊定義
@@ -28,8 +30,8 @@ namespace dotnetApp.Context
     public DbSet<Singer> Singers { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Collection> Collections { get; set; }
-    public DbSet<GroupSinger> GroupSingers { get; set; }
-    public DbSet<CollectionSound> CollectionSounds { get; set; }
-    public DbSet<SingerSound> SingerSounds { get; set; }
+    public DbSet<Group_Singer> GroupSingers { get; set; }
+    public DbSet<Collection_Sound> CollectionSounds { get; set; }
+    public DbSet<Singer_Sound> SingerSounds { get; set; }
   }
 }
