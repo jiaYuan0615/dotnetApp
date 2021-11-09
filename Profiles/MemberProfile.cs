@@ -5,6 +5,7 @@ using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
 using dotnetApp.Dvos.Member;
 using dotnetApp.Models;
+using dotnetApp.Models.MemberJoin;
 
 namespace dotnetApp.Profiles
 {

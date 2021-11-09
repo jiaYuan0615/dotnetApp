@@ -25,10 +25,11 @@ namespace dotnetApp.Helpers
       // 使用泛型取值
       var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
       var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
+      var sub = _configuration.GetValue<string>("JwtSettings:Sub");
 
       var claims = new List<Claim>();
 
-      claims.Add(new Claim(JwtRegisteredClaimNames.Sub, "Yuan"));
+      claims.Add(new Claim(JwtRegisteredClaimNames.Sub, sub));
 
       // JWT 的唯一識別碼
       claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));

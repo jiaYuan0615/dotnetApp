@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace dotnetApp.Models
 {
   [Table("Group_Singer")]
-  public class GroupSinger : Time
+  public class Group_Singer : Time
   {
     public Guid id { get; set; } = Guid.NewGuid();
     [ForeignKey("Group")]

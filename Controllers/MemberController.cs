@@ -10,6 +10,7 @@ using dotnetApp.Dvos.Member;
 using dotnetApp.Filters;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
+using dotnetApp.Models.MemberJoin;
 using dotnetApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -77,8 +78,13 @@ namespace dotnetApp.Controllers
     {
       List<MemberCollection> data = _memberService.GetMemberCollection();
 
+      // Same as js Object.Keys return array of object keys
+      var obj = typeof(MemberCollection).GetProperties();
+      IEnumerable<string> keys = obj.Select((x) => x.Name);
+
       var member = data
       .GroupBy(x => x.id)
+      // using automapper
       .Select(x => _mapper.Map<MemberCollections>(x));
       return Ok(new { member });
     }
@@ -92,6 +98,7 @@ namespace dotnetApp.Controllers
       List<MemberCollection> data = _memberService.GetMemberCollection(memberId);
       var member = data
       .GroupBy(x => x.id)
+      // manual transfer
       .Select(x =>
       {
         MemberCollection member = x.FirstOrDefault();
@@ -154,7 +161,7 @@ namespace dotnetApp.Controllers
       bool verified = _passwordService.CheckPassword(memberLogin.password, member.password);
       if (!verified) throw new AppException("輸入的密碼有誤");
       string token = _jwt.yieldToken(member.id.ToString());
-      return Ok(new { token });
+      return Ok(new { message = "登入成功", token });
     }
 
     [HttpPut]

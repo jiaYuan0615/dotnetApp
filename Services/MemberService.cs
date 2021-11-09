@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using dotnetApp.Context;
-using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
-using dotnetApp.Dvos.Member;
-using dotnetApp.Helpers;
 using dotnetApp.Models;
+using dotnetApp.Models.MemberJoin;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services

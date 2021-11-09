@@ -1,6 +1,6 @@
 using System;
 
-namespace dotnetApp.Dvos.Member
+namespace dotnetApp.Models.MemberJoin
 {
   // 取得 SQL 查詢結果的 model
   public class MemberCollection

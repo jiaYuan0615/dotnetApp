@@ -1,5 +1,5 @@
-using dotnetApp.Dvos.Member;
 using dotnetApp.Models;
+using dotnetApp.Models.MemberJoin;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Context
