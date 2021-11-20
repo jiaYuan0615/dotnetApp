@@ -17,6 +17,57 @@ namespace dotnetApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.9");
 
+            modelBuilder.Entity("dotnetApp.Dtos.Group.GroupSinger", b =>
+                {
+                    b.Property<Guid>("id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerAvatar")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerBirth")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerCountry")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerGender")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("singerNickname")
+                        .HasColumnType("longtext");
+                });
+
+            modelBuilder.Entity("dotnetApp.Dtos.Member.MemberCollection", b =>
+                {
+                    b.Property<Guid>("collectionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("collectionName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("gender")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("name")
+                        .HasColumnType("longtext");
+                });
+
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>
                 {
                     b.Property<Guid>("id")
@@ -43,10 +94,10 @@ namespace dotnetApp.Migrations
 
                     b.HasIndex("memberId");
 
-                    b.ToTable("Collections");
+                    b.ToTable("collections");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.CollectionSound", b =>
+            modelBuilder.Entity("dotnetApp.Models.Collection_Sound", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +123,7 @@ namespace dotnetApp.Migrations
 
                     b.HasIndex("soundId");
 
-                    b.ToTable("Collection_Sound");
+                    b.ToTable("collection_sound");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Group", b =>
@@ -96,10 +147,10 @@ namespace dotnetApp.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Groups");
+                    b.ToTable("groups");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.GroupSinger", b =>
+            modelBuilder.Entity("dotnetApp.Models.Group_Singer", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
@@ -125,7 +176,7 @@ namespace dotnetApp.Migrations
 
                     b.HasIndex("singerId");
 
-                    b.ToTable("Group_Singer");
+                    b.ToTable("group_singer");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Member", b =>
@@ -170,7 +221,43 @@ namespace dotnetApp.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Members");
+                    b.ToTable("members");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Nlog", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("callsite")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("exceptions")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("level")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<string>("logger")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("nlogs");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Singer", b =>
@@ -222,10 +309,10 @@ namespace dotnetApp.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Singers");
+                    b.ToTable("singers");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.SingerSound", b =>
+            modelBuilder.Entity("dotnetApp.Models.Singer_Sound", b =>
                 {
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
@@ -251,7 +338,7 @@ namespace dotnetApp.Migrations
 
                     b.HasIndex("soundId");
 
-                    b.ToTable("Singer_Sound");
+                    b.ToTable("singer_sound");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Sound", b =>
@@ -295,7 +382,7 @@ namespace dotnetApp.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Sounds");
+                    b.ToTable("sounds");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>
@@ -309,7 +396,7 @@ namespace dotnetApp.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.CollectionSound", b =>
+            modelBuilder.Entity("dotnetApp.Models.Collection_Sound", b =>
                 {
                     b.HasOne("dotnetApp.Models.Collection", "Collection")
                         .WithMany()
@@ -328,7 +415,7 @@ namespace dotnetApp.Migrations
                     b.Navigation("Sound");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.GroupSinger", b =>
+            modelBuilder.Entity("dotnetApp.Models.Group_Singer", b =>
                 {
                     b.HasOne("dotnetApp.Models.Group", "Group")
                         .WithMany()
@@ -347,7 +434,7 @@ namespace dotnetApp.Migrations
                     b.Navigation("Singer");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.SingerSound", b =>
+            modelBuilder.Entity("dotnetApp.Models.Singer_Sound", b =>
                 {
                     b.HasOne("dotnetApp.Models.Singer", "Singer")
                         .WithMany()

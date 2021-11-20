@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using dotnetApp.Context;
 using dotnetApp.Dtos.Member;
 using dotnetApp.Models;
-using dotnetApp.Models.MemberJoin;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
@@ -34,9 +33,6 @@ namespace dotnetApp.Services
 
     public List<Member> GetMember()
     {
-      var member = _databaseContext.Members
-                .Include(x => x.Collections)
-                .ToList();
       return _databaseContext.Members.ToList();
     }
     public Member GetAssignMemberById(Guid id)
@@ -49,25 +45,6 @@ namespace dotnetApp.Services
       _databaseContext.Members.Add(member);
       await _databaseContext.SaveChangesAsync();
     }
-
-    public Member YieldMockData()
-    {
-      Member member = new Member
-      {
-        id = Guid.NewGuid(),
-        email = "heroyuans@gmail.com",
-        password = "password",
-        avatar = "avatar",
-        name = "yuan",
-        gender = "men",
-        email_verified = DateTime.Now,
-      };
-      DateTime currentTime = DateTime.Now.AddHours(2);
-      DateTime expireTime = DateTime.Now.AddHours(1);
-      Int32 status = DateTime.Compare(currentTime, expireTime);
-      return member;
-    }
-
     public async Task UpdateMember(Member member, MemberUpdate memberUpdate)
     {
       _databaseContext.Entry(member).CurrentValues.SetValues(memberUpdate);
@@ -101,21 +78,22 @@ namespace dotnetApp.Services
     public List<MemberCollection> GetMemberCollection(string id)
     {
       // using pure sql command
-      string sql = $@"
+      FormattableString sql = $@"
       SELECT
-        Members.id,
-        Members.email,
-        Members.`name`,
-        Members.gender,
-        Collections.id AS collectionId,
-        Collections.`name` AS collectionName
+        members.id,
+        members.email,
+        members.`name`,
+        members.gender,
+        collections.id AS collectionId,
+        collections.`name` AS collectionName
       FROM
-        Members
-        LEFT JOIN Collections ON Collections.memberId = Members.id
+        members
+        LEFT JOIN collections ON collections.memberId = members.id
       WHERE
-        Members.id = '{id}'";
-      var member = _databaseContext.MemberCollections
-      .FromSqlRaw(sql)
+        members.id = {id}";
+      List<MemberCollection> member = _databaseContext.MemberCollections
+      .FromSqlInterpolated(sql)
+      .AsNoTracking()
       .ToList();
       return member;
     }
@@ -124,17 +102,18 @@ namespace dotnetApp.Services
     {
       string sql = $@"
       SELECT
-        Members.id,
-        Members.email,
-        Members.`name`,
-        Members.gender,
-        Collections.id AS collectionId,
-        Collections.`name` AS collectionName
+        members.id,
+        members.email,
+        members.`name`,
+        members.gender,
+        collections.id AS collectionId,
+        collections.`name` AS collectionName
       FROM
-        Members
-        LEFT JOIN Collections ON Collections.memberId = Members.id";
-      var member = _databaseContext.MemberCollections
+        members
+        LEFT JOIN collections ON collections.memberId = members.id";
+      List<MemberCollection> member = _databaseContext.MemberCollections
       .FromSqlRaw(sql)
+      .AsNoTracking()
       .ToList();
       return member;
     }

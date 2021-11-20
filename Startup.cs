@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using dotnetApp.Context;
+using dotnetApp.Filters;
 using dotnetApp.Helpers;
 using dotnetApp.Middlewares;
 using dotnetApp.Services;
@@ -39,7 +40,7 @@ namespace dotnetApp
       services.AddSwaggerGen(option =>
       {
         option.SwaggerDoc("v1", new OpenApiInfo { Title = "歌曲推薦系統", Version = "v1" });
-        var FilePath = Path.Combine(AppContext.BaseDirectory, "dotnetApp.xml");
+        string FilePath = Path.Combine(AppContext.BaseDirectory, "dotnetApp.xml");
         option.IncludeXmlComments(FilePath);
       });
 
@@ -80,9 +81,9 @@ namespace dotnetApp
           ValidIssuer = Configuration.GetValue<string>("JwtSettings:Issuer"),
           ValidateAudience = false,
           // 驗證有效時間
-          // 依照 Expires
+          // 依照 Expires
           ClockSkew = TimeSpan.Zero,
-          // 依照 Expires 並加上 5 分鐘
+          // 依照 Expires 並加上 5 分鐘
           // ValidateLifetime = true,
 
           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JwtSettings:SignKey")))
@@ -103,7 +104,7 @@ namespace dotnetApp
         // }
         // };
       });
-      // services.AddScoped(typeof(CustomAuthorization));
+      // services.AddScoped<CustomAuthorization>();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<IMemberService, MemberService>();
       services.AddScoped<ICollectionService, CollectionService>();
@@ -122,19 +123,16 @@ namespace dotnetApp
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI(v => v.SwaggerEndpoint("v1/swagger.json", "My API V1"));
       }
       else
       {
         app.UseHsts();
       }
 
-      app.UseSwagger();
-      app.UseSwaggerUI(v => v.SwaggerEndpoint("v1/swagger.json", "My API V1"));
-
       app.UseHttpsRedirection();
-
       app.UseCors("CorsPolicy");
-
       app.UseRouting();
 
       // 客製化 401 回應的其中一種方法

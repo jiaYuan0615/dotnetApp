@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetApp.Models
 {
-  [Table("Group_Singer")]
+  [Table("group_singer")]
   public class Group_Singer : Time
   {
     public Guid id { get; set; } = Guid.NewGuid();

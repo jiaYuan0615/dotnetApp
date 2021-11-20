@@ -18,13 +18,14 @@ namespace dotnetApp.Middlewares
     public async Task Invoke(HttpContext context)
     {
       await _next(context);
-      var response = context.Response;
-      if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
+      HttpResponse response = context.Response;
+      int unauthorizedCode = (int)HttpStatusCode.Unauthorized;
+      if (response.StatusCode == unauthorizedCode)
       {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-        var result = JsonSerializer.Serialize(new { message = "請於登入後進行" });
-        await context.Response.WriteAsync(result);
+        response.ContentType = "application/json";
+        response.StatusCode = unauthorizedCode;
+        string result = JsonSerializer.Serialize(new { message = "請於登入後進行" });
+        await response.WriteAsync(result);
       }
     }
   }

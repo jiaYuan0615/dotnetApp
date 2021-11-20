@@ -8,6 +8,7 @@ using dotnetApp.Helpers;
 using dotnetApp.Models;
 using dotnetApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace dotnetApp.Controllers
 {
@@ -17,18 +18,26 @@ namespace dotnetApp.Controllers
   public class SingerController : ControllerBase
   {
     private readonly IMapper _mapper;
+    private readonly ILogger<SingerController> _logger;
     private readonly ISingerService _singerService;
 
     public SingerController(
       IMapper mapper,
+      ILogger<SingerController> logger,
       ISingerService singerService
     )
     {
-
       _mapper = mapper;
+      _logger = logger;
       _singerService = singerService;
     }
 
+    // api/singer
+    /// <summary>
+    /// 查詢所有歌手
+    /// </summary>
+    /// <returns>所有歌手</returns>
+    /// <response code="200">所有歌手資訊</response>
     [HttpGet]
     public IActionResult GetSinger()
     {
@@ -37,6 +46,14 @@ namespace dotnetApp.Controllers
       return Ok(new { singer });
     }
 
+    // Get api/singer/{id}
+    /// <summary>
+    /// 查詢特定歌手
+    /// </summary>
+    /// <param name="id">歌手編號</param>
+    /// <returns>歌手資訊</returns>
+    /// <response code="200">歌手資訊</response>
+    /// <response code="404">找不到該歌手</response>
     [HttpGet("{id}")]
     public IActionResult GetAssignSinger(Guid id)
     {
@@ -46,6 +63,14 @@ namespace dotnetApp.Controllers
       return Ok(new { singer });
     }
 
+
+    // Post api/group
+    /// <summary>
+    /// 新增歌手
+    /// </summary>
+    /// <returns>新增歌手</returns>
+    /// <response code="200">新增歌手成功</response>
+    /// <response code="400">新增歌手失敗</response>
     [HttpPost]
     public async Task<IActionResult> PostSinger([FromBody] SingerCreate singerCreate)
     {
@@ -57,7 +82,7 @@ namespace dotnetApp.Controllers
       }
       catch (Exception)
       {
-        throw new AppException("輸入的內容有誤");
+        throw new AppException("新增歌手失敗");
       }
     }
   }

@@ -3,7 +3,6 @@ using System.Linq;
 using AutoMapper;
 using dotnetApp.Dtos.Group;
 using dotnetApp.Dvos.Group;
-using dotnetApp.Models.GroupJoin;
 using dotnetApp.Models;
 using dotnetApp.Dtos.Singer;
 
@@ -27,7 +26,7 @@ namespace dotnetApp.Profiles
         id = x.singerId,
         name = x.singerName,
         avatar = x.singerAvatar,
-        nickname = x.singerNickName,
+        nickname = x.singerNickname,
         gender = x.singerGender,
         birth = x.singerBirth,
         country = x.singerBirth,

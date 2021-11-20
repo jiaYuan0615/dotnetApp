@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetApp.Models
 {
-  [Table("Members")]
+  [Table("members")]
   public class Member : Time
   {
     [Key]

@@ -47,7 +47,7 @@ namespace dotnetApp.Controllers
       try
       {
         string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-        var collection = _mapper.Map<Collection>(collectionCreate);
+        Collection collection = _mapper.Map<Collection>(collectionCreate);
         collection.memberId = Guid.Parse(memberId);
         await _collectionService.PostCollection(collection);
         return Ok(new { message = "新增收藏資料夾成功" });

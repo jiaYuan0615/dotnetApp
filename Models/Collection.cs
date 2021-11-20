@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetApp.Models
 {
-  [Table("Collections")]
+  [Table("collections")]
   public class Collection : Time
   {
     [Key]

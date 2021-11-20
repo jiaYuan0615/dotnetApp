@@ -23,11 +23,11 @@ namespace dotnetApp.Helpers
       // var issuer = _configuration["JwtSettings:Issuer"];
       // var signKey = _configuration["JwtSettings:SignKey"];
       // 使用泛型取值
-      var issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
-      var signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
-      var sub = _configuration.GetValue<string>("JwtSettings:Sub");
+      string issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
+      string signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
+      string sub = _configuration.GetValue<string>("JwtSettings:Sub");
 
-      var claims = new List<Claim>();
+      List<Claim> claims = new List<Claim>();
 
       claims.Add(new Claim(JwtRegisteredClaimNames.Sub, sub));
 

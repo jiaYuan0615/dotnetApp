@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace dotnetApp.Models.MemberJoin
+namespace dotnetApp.Dtos.Member
 {
   // 取得 SQL 查詢結果的 model
+  [NotMapped]
   public class MemberCollection
   {
     public Guid id { get; set; }

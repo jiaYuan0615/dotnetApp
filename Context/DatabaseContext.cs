@@ -1,6 +1,6 @@
+using dotnetApp.Dtos.Group;
+using dotnetApp.Dtos.Member;
 using dotnetApp.Models;
-using dotnetApp.Models.GroupJoin;
-using dotnetApp.Models.MemberJoin;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Context
@@ -15,10 +15,12 @@ namespace dotnetApp.Context
     protected override void OnModelCreating(ModelBuilder builder)
     {
       // 要自己下SQL 需要建立 model 並且在下面加入這行
+      // 宣告不被 migrations 追蹤需要加入 ToView(null)
       // 外鍵關聯已經抽到 model 做完
       // 查詢會員收藏項目
-      builder.Entity<MemberCollection>().HasNoKey();
-      builder.Entity<GroupSinger>().HasNoKey();
+      builder.Entity<MemberCollection>().HasNoKey().ToView(null);
+      // 查詢各個團體的歌手
+      builder.Entity<GroupSinger>().HasNoKey().ToView(null);
     }
 
     // 要使用 ORM CRUD 前需要在這邊定義
@@ -26,12 +28,14 @@ namespace dotnetApp.Context
 
     // 查詢會員收藏項目
     public DbSet<MemberCollection> MemberCollections { get; set; }
+    public DbSet<GroupSinger> GroupSingers { get; set; }
     public DbSet<Sound> Sounds { get; set; }
     public DbSet<Singer> Singers { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Collection> Collections { get; set; }
-    public DbSet<Group_Singer> GroupSingers { get; set; }
-    public DbSet<Collection_Sound> CollectionSounds { get; set; }
-    public DbSet<Singer_Sound> SingerSounds { get; set; }
+    public DbSet<Group_Singer> Group_Singer { get; set; }
+    public DbSet<Collection_Sound> Collection_Sound { get; set; }
+    public DbSet<Singer_Sound> Singer_Sound { get; set; }
+    public DbSet<Nlog> Nlogs { get; set; }
   }
 }

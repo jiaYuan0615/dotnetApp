@@ -6,7 +6,7 @@ namespace dotnetApp.Helpers
 {
   public class CommonHelpers
   {
-    // Same as js Object.Keys return array of object keys
+    // Equals to JavaScript Object.Keys method
     public static IEnumerable<string> objectKeys<T>(T data)
     {
       var item = typeof(T).GetProperties();
