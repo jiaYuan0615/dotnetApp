@@ -33,8 +33,6 @@ namespace dotnetApp.Controllers
     private readonly IPasswordService _passwordService;
     private readonly ILogger<MemberController> _logger;
 
-    private readonly string _program = "使用者";
-
     public MemberController(
       DatabaseContext databaseContext,
       IMapper mapper,
@@ -66,11 +64,18 @@ namespace dotnetApp.Controllers
     [HttpGet]
     public IActionResult GetMember()
     {
-      string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-      List<Member> data = _memberService.GetMember();
-      var member = _mapper.Map<List<MemberRead>>(data);
-      _logger.LogInformation("Method : GetMember");
-      return Ok(new { member });
+      try
+      {
+        string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+        List<Member> data = _memberService.GetMember();
+        List<MemberRead> member = _mapper.Map<List<MemberRead>>(data);
+        return Ok(new { member });
+      }
+      catch (Exception)
+      {
+        _logger.LogError(LogEvent.error, "執行[Get api/member] 發生例外錯誤");
+        throw new AppException("執行發生例外錯誤");
+      }
     }
 
     // GET api/member/collection
@@ -90,7 +95,6 @@ namespace dotnetApp.Controllers
 
       IEnumerable<MemberCollections> member = data
       .GroupBy(x => x.id)
-      // using automapper
       .Select(x => _mapper.Map<MemberCollections>(x));
       return Ok(new { member });
     }
@@ -126,10 +130,18 @@ namespace dotnetApp.Controllers
     [HttpGet("{id}")]
     public IActionResult GetAssignMember(Guid id)
     {
-      var data = _memberService.GetAssignMemberById(id);
-      if (data == null) return NotFound(new { message = "找不到該使用者" });
-      var member = _mapper.Map<MemberRead>(data);
-      return Ok(new { member });
+      try
+      {
+        Member data = _memberService.GetAssignMemberById(id);
+        if (data == null) return NotFound(new { message = "找不到該使用者" });
+        MemberRead member = _mapper.Map<MemberRead>(data);
+        return Ok(new { member });
+      }
+      catch (Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行[Get /api/member/{id.ToString()}] 發生例外錯誤");
+        throw new AppException("執行發生例外錯誤");
+      }
     }
 
 
@@ -145,12 +157,13 @@ namespace dotnetApp.Controllers
     {
       try
       {
-        var member = _mapper.Map<Member>(memberRegister);
+        Member member = _mapper.Map<Member>(memberRegister);
         await _memberService.RegisterMember(member);
         return Ok(new { message = "註冊帳號成功" });
       }
       catch (Exception)
       {
+        _logger.LogError(LogEvent.error, $"執行[Post /api/member] 出現輸入的內容有誤");
         throw new AppException("輸入的內容有誤");
       }
     }
@@ -169,22 +182,22 @@ namespace dotnetApp.Controllers
       Member member = _memberService.GetAssignMemberByEmail(memberLogin.email);
       if (member == null)
       {
-        _logger.LogError(LogEvent.NotFound, $"尚未註冊的電子郵件{memberLogin.email}嘗試登入");
+        _logger.LogError(LogEvent.NotFound, $"尚未註冊的電子郵件[{memberLogin.email}]嘗試登入");
         return NotFound(new { message = "找不到該使用者" });
       }
-      _logger.LogInformation(LogEvent.process, $"用戶：{member.id}，執行{this._program}登入");
+      _logger.LogInformation(LogEvent.process, $"用戶[{member.id}]，執行[Post api/member/login]");
       bool verified = _passwordService.CheckPassword(memberLogin.password, member.password);
       if (!verified)
       {
-        _logger.LogError(LogEvent.error, $"用戶：{member.id}，輸入密碼錯誤");
+        _logger.LogError(LogEvent.error, $"用戶[{member.id}]，輸入密碼錯誤");
         throw new AppException("輸入的密碼有誤");
       }
       string token = _jwt.yieldToken(member.id.ToString());
-      _logger.LogInformation(LogEvent.success, $"用戶：{member.id}，登入系統");
+      _logger.LogInformation(LogEvent.success, $"用戶[{member.id}]，登入系統");
       return Ok(new { message = "登入成功", token });
     }
 
-    //PUT apii/member
+    //PUT api/member
     /// <summary>
     /// 修改使用者資訊
     /// </summary>
@@ -198,11 +211,11 @@ namespace dotnetApp.Controllers
       string id = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
       try
       {
-        _logger.LogInformation(LogEvent.process, $"用戶：{id}，執行{this._program}更新");
+        _logger.LogInformation(LogEvent.process, $"用戶[{id}]，執行[Put api/member]");
         Member data = _memberService.GetAssignMemberById(Guid.Parse(id));
         if (data == null)
         {
-          _logger.LogError(LogEvent.NotFound, $"用戶：{id}，找不到該使用者錯誤");
+          _logger.LogError(LogEvent.NotFound, $"用戶[{id}]，找不到該使用者錯誤");
           throw new NotFoundException("找不到該使用者");
         }
         // 更新資料的兩種方法
@@ -210,12 +223,12 @@ namespace dotnetApp.Controllers
         // _mapper.Map(memberUpdate, data);
         // await _memberService.UpdateMember();
         await _memberService.UpdateMember(data, memberUpdate);
-        _logger.LogInformation(LogEvent.update, $"用戶：{id}，更新個人資訊成功");
+        _logger.LogInformation(LogEvent.update, $"用戶[{id}]，更新個人資訊成功");
         return Ok(new { message = "更新個人資訊成功" });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.BadRequest, $"用戶:{id}，更新個人資訊失敗");
+        _logger.LogError(LogEvent.BadRequest, $"用戶[{id}]，更新個人資訊失敗");
         throw new AppException("更新個人資訊失敗");
       }
     }

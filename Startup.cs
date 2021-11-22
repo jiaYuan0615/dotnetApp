@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using dotnetApp.Context;
-using dotnetApp.Filters;
 using dotnetApp.Helpers;
 using dotnetApp.Middlewares;
 using dotnetApp.Services;

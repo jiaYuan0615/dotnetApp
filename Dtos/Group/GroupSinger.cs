@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetApp.Dtos.Group
 {
+  // 查詢各個團體的歌手
   [NotMapped]
   public class GroupSinger
   {

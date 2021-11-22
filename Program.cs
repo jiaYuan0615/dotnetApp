@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,13 +17,12 @@ namespace dotnetApp
         Host.CreateDefaultBuilder(args)
             .ConfigureLogging(logging =>
             {
-              // logging.ClearProviders();
+              logging.ClearProviders();
               logging.SetMinimumLevel(LogLevel.Warning);
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
-              webBuilder.UseStartup<Startup>();
-              // .UseNLog();
+              webBuilder.UseStartup<Startup>().UseNLog();
             });
   }
 }

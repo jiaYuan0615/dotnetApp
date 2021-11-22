@@ -77,7 +77,6 @@ namespace dotnetApp.Services
 
     public List<MemberCollection> GetMemberCollection(string id)
     {
-      // using pure sql command
       FormattableString sql = $@"
       SELECT
         members.id,

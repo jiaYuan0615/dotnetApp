@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace dotnetApp.Dtos.Member
 {
   // 取得 SQL 查詢結果的 model
+  // 查詢會員收藏項目
   [NotMapped]
   public class MemberCollection
   {

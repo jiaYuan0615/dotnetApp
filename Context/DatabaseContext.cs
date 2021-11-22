@@ -1,5 +1,7 @@
+using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Group;
 using dotnetApp.Dtos.Member;
+using dotnetApp.Dtos.Singer;
 using dotnetApp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +19,11 @@ namespace dotnetApp.Context
       // 要自己下SQL 需要建立 model 並且在下面加入這行
       // 宣告不被 migrations 追蹤需要加入 ToView(null)
       // 外鍵關聯已經抽到 model 做完
-      // 查詢會員收藏項目
+
       builder.Entity<MemberCollection>().HasNoKey().ToView(null);
-      // 查詢各個團體的歌手
       builder.Entity<GroupSinger>().HasNoKey().ToView(null);
+      builder.Entity<CollectionSound>().HasNoKey().ToView(null);
+      builder.Entity<SingerSound>().HasNoKey().ToView(null);
     }
 
     // 要使用 ORM CRUD 前需要在這邊定義
@@ -29,6 +32,8 @@ namespace dotnetApp.Context
     // 查詢會員收藏項目
     public DbSet<MemberCollection> MemberCollections { get; set; }
     public DbSet<GroupSinger> GroupSingers { get; set; }
+    public DbSet<CollectionSound> CollectionSounds { get; set; }
+    public DbSet<SingerSound> SingerSongs { get; set; }
     public DbSet<Sound> Sounds { get; set; }
     public DbSet<Singer> Singers { get; set; }
     public DbSet<Group> Groups { get; set; }

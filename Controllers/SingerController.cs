@@ -7,6 +7,7 @@ using dotnetApp.Dtos.Singer;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
 using dotnetApp.Services;
+using dotnetApp.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -57,12 +58,11 @@ namespace dotnetApp.Controllers
     [HttpGet("{id}")]
     public IActionResult GetAssignSinger(Guid id)
     {
-      var data = _singerService.GetAssignSinger(id);
+      Singer data = _singerService.GetAssignSinger(id);
       if (data == null) return NotFound(new { message = "找不到該歌手" });
-      var singer = _mapper.Map<SingerRead>(data);
+      SingerRead singer = _mapper.Map<SingerRead>(data);
       return Ok(new { singer });
     }
-
 
     // Post api/group
     /// <summary>
@@ -76,13 +76,39 @@ namespace dotnetApp.Controllers
     {
       try
       {
-        var singer = _mapper.Map<Singer>(singerCreate);
+        Singer singer = _mapper.Map<Singer>(singerCreate);
         await _singerService.PostSinger(singer);
         return Ok(new { message = "新增歌手成功" });
       }
       catch (Exception)
       {
+        _logger.LogError(LogEvent.error, @"執行 [Post api/singer] 出現例外錯誤");
         throw new AppException("新增歌手失敗");
+      }
+    }
+
+    // Delete api/singer/{id}
+    /// <summary>
+    /// 刪除歌手資訊
+    /// </summary>
+    /// <param name="id">歌手編號</param>
+    /// <response code="200">刪除歌手成功</response>
+    /// <response code="400">刪除歌手失敗</response>
+    /// <response code="404">找不到該歌手</response>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteSinger(string id)
+    {
+      try
+      {
+        Singer singer = _singerService.GetAssignSinger(Guid.Parse(id));
+        if (singer == null) return NotFound(new { message = "找不到歌手" });
+        await _singerService.DeleteSinger(singer);
+        return Ok(new { message = "刪除歌手成功" });
+      }
+      catch (Exception)
+      {
+        _logger.LogError(LogEvent.error, $@"執行 [Delete api/singer/{id}] 出現例外錯誤");
+        throw new AppException("刪除歌手失敗");
       }
     }
   }
