@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnetApp.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -81,6 +81,33 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "sounds",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    name = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    lyrics = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    publishYear = table.Column<string>(type: "varchar(4)", maxLength: 4, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    cover = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    OST = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    isCover = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_sounds", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "singers",
                 columns: table => new
                 {
@@ -107,33 +134,12 @@ namespace dotnetApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_singers", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "sounds",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    name = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    lyrics = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    publishYear = table.Column<string>(type: "varchar(4)", maxLength: 4, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    cover = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    OST = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    isCover = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_sounds", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_singers_groups_groupId",
+                        column: x => x.groupId,
+                        principalTable: "groups",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -286,6 +292,11 @@ namespace dotnetApp.Migrations
                 name: "IX_singer_sound_soundId",
                 table: "singer_sound",
                 column: "soundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_singers_groupId",
+                table: "singers",
+                column: "groupId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -306,9 +317,6 @@ namespace dotnetApp.Migrations
                 name: "collections");
 
             migrationBuilder.DropTable(
-                name: "groups");
-
-            migrationBuilder.DropTable(
                 name: "singers");
 
             migrationBuilder.DropTable(
@@ -316,6 +324,9 @@ namespace dotnetApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "members");
+
+            migrationBuilder.DropTable(
+                name: "groups");
         }
     }
 }

@@ -60,7 +60,7 @@ namespace dotnetApp.Services
         `groups`.`name` AS groupName,
         `sounds`.id AS soundId,
         `sounds`.`name` AS soundName,
-	      `sounds`.publishYear AS soundPublishYear
+        `sounds`.publishYear AS soundPublishYear
       FROM
         singers
         LEFT JOIN `groups` ON `groups`.id = singers.groupId

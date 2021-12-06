@@ -18,7 +18,7 @@ namespace dotnetApp.Models
     [StringLength(300)]
     public string biography { get; set; }
     [Required]
-    [ForeignKey("FK_Group")]
+    [ForeignKey("Group")]
     public Guid groupId { get; set; }
     [Required]
     [StringLength(60)]
@@ -30,10 +30,12 @@ namespace dotnetApp.Models
     [Required]
     [StringLength(20)]
     public string country { get; set; }
+    #region belongs
+    public Group Group { get; set; }
+    #endregion
 
     #region m:n
     // public ICollection<Sound> Sounds { get; set; }
-    // public ICollection<Group> Groups { get; set; }
     #endregion
   }
 }

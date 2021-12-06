@@ -13,7 +13,7 @@ namespace dotnetApp.Models
     [StringLength(30)]
     public string name { get; set; }
     [Required]
-    [ForeignKey("FK_Member")]
+    [ForeignKey("Member")]
     public Guid memberId { get; set; }
 
     #region belongs
