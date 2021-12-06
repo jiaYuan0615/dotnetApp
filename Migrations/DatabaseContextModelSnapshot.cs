@@ -210,35 +210,6 @@ namespace dotnetApp.Migrations
                     b.ToTable("groups");
                 });
 
-            modelBuilder.Entity("dotnetApp.Models.Group_Singer", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("createdAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("groupId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("singerId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("updatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("groupId");
-
-                    b.HasIndex("singerId");
-
-                    b.ToTable("group_singer");
-                });
-
             modelBuilder.Entity("dotnetApp.Models.Member", b =>
                 {
                     b.Property<Guid>("id")
@@ -475,25 +446,6 @@ namespace dotnetApp.Migrations
                     b.Navigation("Collection");
 
                     b.Navigation("Sound");
-                });
-
-            modelBuilder.Entity("dotnetApp.Models.Group_Singer", b =>
-                {
-                    b.HasOne("dotnetApp.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("groupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dotnetApp.Models.Singer", "Singer")
-                        .WithMany()
-                        .HasForeignKey("singerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Singer");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Singer", b =>

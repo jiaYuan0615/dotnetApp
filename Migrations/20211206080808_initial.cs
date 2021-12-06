@@ -169,36 +169,6 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "group_singer",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    groupId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    singerId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_group_singer", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_group_singer_groups_groupId",
-                        column: x => x.groupId,
-                        principalTable: "groups",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_group_singer_singers_singerId",
-                        column: x => x.singerId,
-                        principalTable: "singers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "singer_sound",
                 columns: table => new
                 {
@@ -274,16 +244,6 @@ namespace dotnetApp.Migrations
                 column: "memberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_group_singer_groupId",
-                table: "group_singer",
-                column: "groupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_group_singer_singerId",
-                table: "group_singer",
-                column: "singerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_singer_sound_singerId",
                 table: "singer_sound",
                 column: "singerId");
@@ -303,9 +263,6 @@ namespace dotnetApp.Migrations
         {
             migrationBuilder.DropTable(
                 name: "collection_sound");
-
-            migrationBuilder.DropTable(
-                name: "group_singer");
 
             migrationBuilder.DropTable(
                 name: "nlogs");
