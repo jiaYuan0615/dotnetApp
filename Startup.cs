@@ -110,6 +110,7 @@ namespace dotnetApp
       services.AddScoped<ISingerService, SingerService>();
       services.AddScoped<IGroupService, GroupService>();
       services.AddScoped<ISoundService, SoundService>();
+      services.AddScoped<IImageService, ImageService>();
       services.AddScoped<IPasswordService, PasswordService>();
       services.AddScoped<IMailService, MailService>();
     }

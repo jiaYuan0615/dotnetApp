@@ -17,12 +17,13 @@ namespace dotnetApp
         Host.CreateDefaultBuilder(args)
             .ConfigureLogging(logging =>
             {
-              logging.ClearProviders();
-              logging.SetMinimumLevel(LogLevel.Warning);
+              // logging.ClearProviders();
+              // logging.SetMinimumLevel(LogLevel.Warning);
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
-              webBuilder.UseStartup<Startup>().UseNLog();
+              // webBuilder.UseStartup<Startup>().UseNLog();
+              webBuilder.UseStartup<Startup>();
             });
   }
 }

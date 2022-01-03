@@ -16,6 +16,7 @@ namespace dotnetApp.Services
     Member GetAssignMemberById(Guid id);
     Task RegisterMember(Member member);
     Member GetAssignMemberByEmail(string email);
+    Task UpdateMember();
     Task UpdateMember(Member member, MemberUpdate memberUpdate);
     Task DeleteMember(Member member);
     List<Member> GetMemberCollectionItem(string id);
@@ -45,13 +46,13 @@ namespace dotnetApp.Services
       _databaseContext.Members.Add(member);
       await _databaseContext.SaveChangesAsync();
     }
+    public async Task UpdateMember()
+    {
+      await _databaseContext.SaveChangesAsync();
+    }
     public async Task UpdateMember(Member member, MemberUpdate memberUpdate)
     {
       _databaseContext.Entry(member).CurrentValues.SetValues(memberUpdate);
-      await _databaseContext.SaveChangesAsync();
-    }
-    public async Task UpdateMember()
-    {
       await _databaseContext.SaveChangesAsync();
     }
     public async Task DeleteMember(Member member)

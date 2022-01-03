@@ -42,7 +42,7 @@ namespace dotnetApp.Helpers
 
       var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-      var tokenDescriptor = new SecurityTokenDescriptor
+      SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
       {
         Issuer = issuer,
         Subject = identify,

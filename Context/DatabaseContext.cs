@@ -37,6 +37,7 @@ namespace dotnetApp.Context
     public DbSet<Sound> Sounds { get; set; }
     public DbSet<Singer> Singers { get; set; }
     public DbSet<Group> Groups { get; set; }
+    public DbSet<Image> Images { get; set; }
     public DbSet<Collection> Collections { get; set; }
     public DbSet<Collection_Sound> Collection_Sound { get; set; }
     public DbSet<Singer_Sound> Singer_Sound { get; set; }

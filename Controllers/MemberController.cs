@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.Configuration;
 using dotnetApp.Context;
 using dotnetApp.Dtos.Member;
 using dotnetApp.Dvos.Member;
@@ -12,6 +13,7 @@ using dotnetApp.Models;
 using dotnetApp.Services;
 using dotnetApp.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -32,6 +34,14 @@ namespace dotnetApp.Controllers
     private readonly IMailService _mailService;
     private readonly IPasswordService _passwordService;
     private readonly ILogger<MemberController> _logger;
+    private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
+        {
+            {".png", "image/png"},
+            {".jpg", "image/jpeg"},
+            {".jpeg", "image/jpeg"},
+        };
+
+    private readonly string _folder;
 
     public MemberController(
       DatabaseContext databaseContext,
@@ -40,7 +50,8 @@ namespace dotnetApp.Controllers
       IMemberService memberService,
       IMailService mailService,
       IPasswordService passwordService,
-      ILogger<MemberController> logger
+      ILogger<MemberController> logger,
+      IWebHostEnvironment env
       )
     {
       _memberService = memberService;
@@ -49,6 +60,7 @@ namespace dotnetApp.Controllers
       _mailService = mailService;
       _passwordService = passwordService;
       _logger = logger;
+      _folder = $"{env.WebRootPath}/storage";
     }
 
     // GET api/member
@@ -220,9 +232,9 @@ namespace dotnetApp.Controllers
         }
         // 更新資料的兩種方法
         // 需要把要更新的資料補滿
-        // _mapper.Map(memberUpdate, data);
-        // await _memberService.UpdateMember();
-        await _memberService.UpdateMember(data, memberUpdate);
+        _mapper.Map(memberUpdate, data);
+        await _memberService.UpdateMember();
+        // await _memberService.UpdateMember(data, memberUpdate);
         _logger.LogInformation(LogEvent.update, $"用戶[{id}]，更新個人資訊成功");
         return Ok(new { message = "更新個人資訊成功" });
       }
