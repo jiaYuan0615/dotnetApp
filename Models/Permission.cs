@@ -1,24 +1,22 @@
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Http;
 
 namespace dotnetApp.Models
 {
-  [Table("images")]
-  public class Image
+  [Table("permissions")]
+  public class Permission : Time
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid id { get; set; } = Guid.NewGuid();
-
     [Required]
-    public string FileName { get; set; }
+    [StringLength(20)]
+    public string title { get; set; }
     [Required]
-    public int Length { get; set; }
-    [Required]
-    public string ContentType { get; set; }
-    [Required]
-    public string path { get; set; }
+    [StringLength(100)]
+    public string action { get; set; }
+    public bool status { get; set; }
   }
 }

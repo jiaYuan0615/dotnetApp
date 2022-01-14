@@ -9,13 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
 {
-
-  public interface IImageService
-  {
-    Image GetAssignImageById(Guid id);
-    Task PostImage(Image image);
-  }
-  public class ImageService : IImageService
+  public class ImageService
   {
     private DatabaseContext _databaseContext;
 

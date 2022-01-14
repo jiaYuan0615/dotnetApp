@@ -19,10 +19,10 @@ namespace dotnetApp.Migrations
 
             modelBuilder.Entity("dotnetApp.Dtos.Collection.CollectionSound", b =>
                 {
-                    b.Property<string>("createdAt")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("createdAt")
                         .HasColumnType("longtext");
 
                     b.Property<string>("name")
@@ -36,11 +36,16 @@ namespace dotnetApp.Migrations
 
                     b.Property<string>("soundPublishYear")
                         .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable(null);
                 });
 
             modelBuilder.Entity("dotnetApp.Dtos.Group.GroupSinger", b =>
                 {
                     b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<string>("name")
@@ -66,10 +71,18 @@ namespace dotnetApp.Migrations
 
                     b.Property<string>("singerNickname")
                         .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable(null);
                 });
 
             modelBuilder.Entity("dotnetApp.Dtos.Member.MemberCollection", b =>
                 {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
                     b.Property<Guid>("collectionId")
                         .HasColumnType("char(36)");
 
@@ -82,15 +95,42 @@ namespace dotnetApp.Migrations
                     b.Property<string>("gender")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("name")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable(null);
+                });
+
+            modelBuilder.Entity("dotnetApp.Dtos.Role.RolePermission", b =>
+                {
                     b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("action")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("name")
                         .HasColumnType("longtext");
+
+                    b.Property<Guid>("permissionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("id");
+
+                    b.ToTable(null);
                 });
 
             modelBuilder.Entity("dotnetApp.Dtos.Singer.SingerSound", b =>
                 {
+                    b.Property<string>("id")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("avatar")
                         .HasColumnType("longtext");
 
@@ -109,9 +149,6 @@ namespace dotnetApp.Migrations
                     b.Property<string>("groupName")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("id")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("name")
                         .HasColumnType("longtext");
 
@@ -126,6 +163,10 @@ namespace dotnetApp.Migrations
 
                     b.Property<string>("soundPublishYear")
                         .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable(null);
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Collection", b =>
@@ -210,6 +251,32 @@ namespace dotnetApp.Migrations
                     b.ToTable("groups");
                 });
 
+            modelBuilder.Entity("dotnetApp.Models.Image", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
+                    b.Property<string>("path")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable("images");
+                });
+
             modelBuilder.Entity("dotnetApp.Models.Member", b =>
                 {
                     b.Property<Guid>("id")
@@ -255,6 +322,35 @@ namespace dotnetApp.Migrations
                     b.ToTable("members");
                 });
 
+            modelBuilder.Entity("dotnetApp.Models.Member_Role", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("memberId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("roleId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("memberId");
+
+                    b.HasIndex("roleId");
+
+                    b.ToTable("member_role");
+                });
+
             modelBuilder.Entity("dotnetApp.Models.Nlog", b =>
                 {
                     b.Property<Guid>("id")
@@ -289,6 +385,94 @@ namespace dotnetApp.Migrations
                     b.HasKey("id");
 
                     b.ToTable("nlogs");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Permission", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("action")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("permissions");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Permission_Role", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("permissionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("roleId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("permissionId");
+
+                    b.HasIndex("roleId");
+
+                    b.ToTable("permission_role");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Role", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("roles");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Singer", b =>
@@ -446,6 +630,44 @@ namespace dotnetApp.Migrations
                     b.Navigation("Collection");
 
                     b.Navigation("Sound");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Member_Role", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("memberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("roleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Permission_Role", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Permission", "Permission")
+                        .WithMany()
+                        .HasForeignKey("permissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("roleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Singer", b =>

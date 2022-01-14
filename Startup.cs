@@ -2,12 +2,14 @@ using System;
 using System.IO;
 using System.Text;
 using dotnetApp.Context;
+using dotnetApp.Dtos.Member;
 using dotnetApp.Helpers;
 using dotnetApp.Middlewares;
 using dotnetApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +52,7 @@ namespace dotnetApp
         }
       );
       services.AddSingleton<JwtHelpers>();
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
       services.AddHttpClient();
       services.AddCors(options =>
       {
@@ -105,14 +108,17 @@ namespace dotnetApp
       });
       // services.AddScoped<CustomAuthorization>();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-      services.AddScoped<IMemberService, MemberService>();
-      services.AddScoped<ICollectionService, CollectionService>();
-      services.AddScoped<ISingerService, SingerService>();
-      services.AddScoped<IGroupService, GroupService>();
-      services.AddScoped<ISoundService, SoundService>();
-      services.AddScoped<IImageService, ImageService>();
-      services.AddScoped<IPasswordService, PasswordService>();
-      services.AddScoped<IMailService, MailService>();
+      // services.AddScoped<IMemberService, MemberService>();
+      services.AddScoped<MemberService>();
+      services.AddScoped<MemberRegister>();
+      services.AddScoped<CollectionService>();
+      services.AddScoped<SingerService>();
+      services.AddScoped<GroupService>();
+      services.AddScoped<SoundService>();
+      services.AddScoped<ImageService>();
+      services.AddScoped<PasswordService>();
+      services.AddScoped<FileService>();
+      services.AddScoped<MailService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

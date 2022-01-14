@@ -1,4 +1,5 @@
 using dotnetApp.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace dotnetApp.Dtos.Member
 {
@@ -18,7 +19,7 @@ namespace dotnetApp.Dtos.Member
         hash = passwordService.HashPassword(value);
       }
     }
-    public string avatar { get; set; }
+    public IFormFile avatar { get; set; }
     public string name { get; set; }
     public string gender { get; set; }
   }

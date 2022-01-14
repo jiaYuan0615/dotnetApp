@@ -1,6 +1,7 @@
 using AutoMapper;
 using dotnetApp.Dtos;
 using dotnetApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace dotnetApp.Profiles
 {

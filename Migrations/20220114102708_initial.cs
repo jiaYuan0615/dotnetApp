@@ -30,6 +30,25 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "images",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FileName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Length = table.Column<int>(type: "int", nullable: false),
+                    ContentType = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    path = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_images", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "members",
                 columns: table => new
                 {
@@ -77,6 +96,46 @@ namespace dotnetApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_nlogs", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "permissions",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    title = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    action = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    status = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_permissions", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "roles",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    name = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    status = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_roles", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -169,6 +228,66 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "member_role",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    memberId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    roleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_member_role", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_member_role_members_memberId",
+                        column: x => x.memberId,
+                        principalTable: "members",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_member_role_roles_roleId",
+                        column: x => x.roleId,
+                        principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "permission_role",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    permissionId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    roleId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_permission_role", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_permission_role_permissions_permissionId",
+                        column: x => x.permissionId,
+                        principalTable: "permissions",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_permission_role_roles_roleId",
+                        column: x => x.roleId,
+                        principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "singer_sound",
                 columns: table => new
                 {
@@ -244,6 +363,26 @@ namespace dotnetApp.Migrations
                 column: "memberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_member_role_memberId",
+                table: "member_role",
+                column: "memberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_member_role_roleId",
+                table: "member_role",
+                column: "roleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_permission_role_permissionId",
+                table: "permission_role",
+                column: "permissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_permission_role_roleId",
+                table: "permission_role",
+                column: "roleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_singer_sound_singerId",
                 table: "singer_sound",
                 column: "singerId");
@@ -265,13 +404,28 @@ namespace dotnetApp.Migrations
                 name: "collection_sound");
 
             migrationBuilder.DropTable(
+                name: "images");
+
+            migrationBuilder.DropTable(
+                name: "member_role");
+
+            migrationBuilder.DropTable(
                 name: "nlogs");
+
+            migrationBuilder.DropTable(
+                name: "permission_role");
 
             migrationBuilder.DropTable(
                 name: "singer_sound");
 
             migrationBuilder.DropTable(
                 name: "collections");
+
+            migrationBuilder.DropTable(
+                name: "permissions");
+
+            migrationBuilder.DropTable(
+                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "singers");

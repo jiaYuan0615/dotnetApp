@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -17,14 +18,20 @@ namespace dotnetApp.Controllers
   [ApiController]
   public class ImageController : ControllerBase
   {
-    private IImageService _imageService;
+    private ImageService _imageService;
     // GetFullPath 配上路徑會直接回傳該路徑位置
     private readonly string defaultImage = Path.GetFullPath("wwwroot/storage/404.png");
     private ILogger<ImageController> _logger;
     private readonly IMapper _mapper;
     private readonly string _folder;
+    private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
+        {
+            {".png", "image/png"},
+            {".jpg", "image/jpeg"},
+            {".jpeg", "image/jpeg"},
+        };
     public ImageController(
-      IImageService imageService,
+      ImageService imageService,
       IMapper mapper,
       ILogger<ImageController> logger,
       IWebHostEnvironment env
@@ -44,7 +51,7 @@ namespace dotnetApp.Controllers
         Image item = _imageService.GetAssignImageById(Guid.Parse(id));
         if (item == null) throw new Exception("找不到該圖片");
         FileStream image = System.IO.File.OpenRead(item.path);
-        return File(image, item.contentType);
+        return File(image, item.ContentType);
       }
       catch (System.Exception)
       {
