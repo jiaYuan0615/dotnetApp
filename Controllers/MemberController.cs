@@ -236,8 +236,23 @@ namespace dotnetApp.Controllers
       }
     }
 
-    public async Task<IActionResult> UpdataPassword()
+    public async Task<IActionResult> UpdataPassword([FromBody] MemberUpdatePassword memberUpdatePassword)
     {
+      string id = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      string _method = "變更使用者密碼";
+      try
+      {
+        Member member = _memberService.GetAssignMemberById(Guid.Parse(id));
+        _mapper.Map(memberUpdatePassword, member);
+        await _memberService.UpdateMember();
+        _logger.LogInformation(LogEvent.update, $"用戶[{id}]，{_method}成功");
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.BadRequest, $"用戶[{id}]，{_method}失敗");
+        throw new AppException($"{_method}失敗");
+      }
       throw new NotImplementedException();
     }
   }

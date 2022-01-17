@@ -20,6 +20,8 @@ namespace dotnetApp.Profiles
       CreateMap<MemberRegister, Member>();
       CreateMap<MemberUpdate, Member>();
       CreateMap<Member, MemberUpdate>();
+      CreateMap<MemberUpdatePassword, Member>();
+      CreateMap<Member, MemberUpdatePassword>();
 
       // 1:m
       CreateMap<IList<MemberCollection>, MemberCollections>()
