@@ -20,12 +20,12 @@ namespace dotnetApp.Controllers
   {
     private readonly IMapper _mapper;
     private readonly ILogger<SingerController> _logger;
-    private readonly ISingerService _singerService;
+    private readonly SingerService _singerService;
 
     public SingerController(
       IMapper mapper,
       ILogger<SingerController> logger,
-      ISingerService singerService
+      SingerService singerService
     )
     {
       _mapper = mapper;

@@ -136,6 +136,7 @@ namespace dotnetApp.Controllers
         await _imageService.PostImage(image);
         Member member = _mapper.Map<Member>(memberRegister);
         member.avatar = Path.Combine(api, image.id.ToString());
+        member.password = _passwordService.HashPassword(memberRegister.password);
         await _memberService.RegisterMember(member);
         return Ok(new { message = $"{_method}成功" });
       }
@@ -166,7 +167,7 @@ namespace dotnetApp.Controllers
           _logger.LogError(LogEvent.NotFound, $"尚未註冊的電子郵件[{memberLogin.email}]嘗試登入");
           return NotFound(new { message = "找不到該使用者" });
         }
-        _logger.LogInformation(LogEvent.process, $"用戶[{member.id}]，執行[Post api/member/login]");
+        _logger.LogInformation(LogEvent.process, $"用戶:[{member.id}]，執行[Post api/member/login]");
         bool verified = _passwordService.CheckPassword(memberLogin.password, member.password);
         if (!verified)
         {
@@ -233,6 +234,11 @@ namespace dotnetApp.Controllers
         _logger.LogError(LogEvent.BadRequest, $"用戶[{id}]，{_method}失敗");
         throw new AppException($"{_method}失敗");
       }
+    }
+
+    public async Task<IActionResult> UpdataPassword()
+    {
+      throw new NotImplementedException();
     }
   }
 }

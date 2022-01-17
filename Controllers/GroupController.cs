@@ -24,14 +24,14 @@ namespace dotnetApp.Controllers
     private readonly DatabaseContext _databaseContext;
     private readonly IMapper _mapper;
     private readonly ILogger<GroupController> _logger;
-    private readonly IGroupService _groupService;
+    private readonly GroupService _groupService;
     private readonly string _program = "團體";
 
     public GroupController(
       DatabaseContext databaseContext,
       IMapper mapper,
       ILogger<GroupController> logger,
-      IGroupService groupService
+      GroupService groupService
     )
     {
       _databaseContext = databaseContext;

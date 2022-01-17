@@ -108,9 +108,7 @@ namespace dotnetApp
       });
       // services.AddScoped<CustomAuthorization>();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-      // services.AddScoped<IMemberService, MemberService>();
       services.AddScoped<MemberService>();
-      services.AddScoped<MemberRegister>();
       services.AddScoped<CollectionService>();
       services.AddScoped<SingerService>();
       services.AddScoped<GroupService>();

@@ -20,16 +20,16 @@ namespace dotnetApp.Controllers
   [Consumes("application/json")]
   public class SoundController : ControllerBase
   {
-    private readonly ISoundService _soundService;
+    private readonly SoundService _soundService;
     private readonly ILogger<SoundController> _logger;
-    private readonly IMemberService _memberService;
+    private readonly MemberService _memberService;
     private readonly IMapper _mapper;
 
     public SoundController(
-      ISoundService soundService,
+      SoundService soundService,
       ILogger<SoundController> logger,
       IMapper mapper,
-      IMemberService memberService
+      MemberService memberService
     )
     {
       _soundService = soundService;
