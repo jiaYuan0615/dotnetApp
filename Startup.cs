@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Reflection;
 using dotnetApp.Context;
-using dotnetApp.Dtos.Member;
 using dotnetApp.Helpers;
 using dotnetApp.Middlewares;
 using dotnetApp.Services;
@@ -41,7 +41,9 @@ namespace dotnetApp
       services.AddSwaggerGen(option =>
       {
         option.SwaggerDoc("v1", new OpenApiInfo { Title = "歌曲推薦系統", Version = "v1" });
-        string FilePath = Path.Combine(AppContext.BaseDirectory, "dotnetApp.xml");
+        // string FilePath = Path.Combine(AppContext.BaseDirectory, "dotnetApp.xml");
+        string XmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        string FilePath = Path.Combine(AppContext.BaseDirectory, XmlFile);
         option.IncludeXmlComments(FilePath);
       });
 

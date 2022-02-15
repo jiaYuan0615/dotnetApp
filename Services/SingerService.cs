@@ -9,18 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
 {
-
-  public interface ISingerService
-  {
-    IEnumerable<Singer> GetSinger();
-    Singer GetAssignSinger(Guid id);
-    SingerSound GetSingerSong(Guid id);
-    Task PostSinger(Singer singer);
-    Task UpdateSinger(Singer singer, SingerUpdate singerUpdate);
-    Task UpdateSinger();
-    Task DeleteSinger(Singer singer);
-  }
-  public class SingerService : ISingerService
+  public class SingerService
   {
     private readonly DatabaseContext _databaseContext;
 
@@ -40,9 +29,32 @@ namespace dotnetApp.Services
       return _databaseContext.Singers.Where(x => x.id == id).FirstOrDefault();
     }
 
-    public IEnumerable<Singer> GetSinger()
+    public List<SingerGroup> GetSinger()
     {
-      return _databaseContext.Singers.ToList();
+      string sql = @"
+      SELECT
+        singers.id,
+        singers.`name`,
+        singers.avatar,
+        singers.nickname,
+        singers.gender,
+        singers.birth,
+        singers.biography,
+        singers.country,
+        `groups`.id AS groupId,
+        `groups`.`name` AS groupName,
+        `groups`.createdAt AS groupCreatedAt,
+        `groups`.updatedAt AS groupupdatedAt
+      FROM
+        singers
+        LEFT JOIN `groups` ON singers.groupId = `groups`.id";
+
+      List<SingerGroup> SingerGroups = _databaseContext.SingerGroups
+      .FromSqlRaw(sql)
+      .AsNoTracking()
+      .ToList();
+
+      return SingerGroups;
     }
 
     public SingerSound GetSingerSong(Guid id)

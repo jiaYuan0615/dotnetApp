@@ -36,6 +36,7 @@ namespace dotnetApp.Controllers
       _logger = logger;
       _memberService = memberService;
       _mapper = mapper;
+
     }
 
     // GET api/sound
@@ -47,15 +48,15 @@ namespace dotnetApp.Controllers
     [HttpGet]
     public IActionResult GetSound()
     {
+      string _method = "查詢所有歌曲";
       try
       {
-        IEnumerable<Sound> data = _soundService.GetSound();
-        IEnumerable<Sound> sounds = _mapper.Map<IEnumerable<Sound>>(data);
+        List<Sound> sounds = _soundService.GetSound();
         return Ok(new { sounds });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.error, "執行[GET api/sound] 發生例外錯誤");
+        _logger.LogError(LogEvent.error, $"執行{_method} 發生例外錯誤");
         throw new AppException("執行發生例外錯誤");
       }
     }
@@ -84,20 +85,21 @@ namespace dotnetApp.Controllers
     /// <response code="400">輸入的內容有誤</response>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> PostSound([FromForm] SoundCreate soundCreate)
+    public async Task<IActionResult> PostSound([FromBody] SoundCreate soundCreate)
     {
+      string _method = "新增歌曲";
       string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-      _logger.LogInformation(LogEvent.process, $"用戶[{memberId}]，執行[Post api/sound]");
+      _logger.LogInformation(LogEvent.process, $"執行{_method}");
       try
       {
         Sound sound = _mapper.Map<Sound>(soundCreate);
         string soundId = await _soundService.PostSound(sound);
-        _logger.LogInformation(LogEvent.success, $"用戶[{memberId}]，新增歌曲成功，歌曲編號[{soundId}]");
+        _logger.LogInformation(LogEvent.success, $"執行{_method}成功，歌曲編號[{soundId}]");
         return Ok(new { message = "新增歌曲成功" });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.error, "新增歌曲出現錯誤");
+        _logger.LogError(LogEvent.error, $"執行{_method}出現錯誤");
         throw new AppException("輸入的內容有誤");
       }
     }

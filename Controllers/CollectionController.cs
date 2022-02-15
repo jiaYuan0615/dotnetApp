@@ -92,25 +92,6 @@ namespace dotnetApp.Controllers
       return Ok(new { member });
     }
 
-    // GET api/collection/item
-    /// <summary>
-    /// 查詢個人的收藏項目
-    /// </summary>
-    /// <returns>個人的收藏項目</returns>
-    /// <response code="200">個人的收藏項目</response>
-    // [TypeFilter(typeof(CustomAuthorization))]
-    // [HttpGet("item")]
-    // public IActionResult GetPersonalCollection()
-    // {
-    //   string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-    //   List<MemberCollection> data = _memberService.GetMemberCollection(memberId);
-    //   var member = data
-    //   .GroupBy(x => x.id)
-    //   .Select(x => _mapper.Map<MemberCollections>(x))
-    //   .FirstOrDefault();
-    //   return Ok(new { member });
-    // }
-
     // GET api/collection
     /// <summary>
     /// 查詢個人的收藏項目

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,6 +11,7 @@ using dotnetApp.Models;
 using dotnetApp.Services;
 using dotnetApp.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,20 +26,31 @@ namespace dotnetApp.Controllers
     private readonly DatabaseContext _databaseContext;
     private readonly IMapper _mapper;
     private readonly ILogger<GroupController> _logger;
+    private readonly FileService _fileService;
+    private readonly ImageService _imageService;
     private readonly GroupService _groupService;
     private readonly string _program = "團體";
+    private string api;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public GroupController(
       DatabaseContext databaseContext,
       IMapper mapper,
       ILogger<GroupController> logger,
-      GroupService groupService
+      GroupService groupService,
+      ImageService imageService,
+      FileService fileService,
+      IHttpContextAccessor httpContextAccessor
     )
     {
       _databaseContext = databaseContext;
       _mapper = mapper;
       _logger = logger;
       _groupService = groupService;
+      _fileService = fileService;
+      _imageService = imageService;
+      _httpContextAccessor = httpContextAccessor;
+      api = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}/api/image";
     }
 
     // GET api/group
@@ -78,22 +91,26 @@ namespace dotnetApp.Controllers
     /// <returns>新增團體</returns>
     /// <response code="200">新增團體成功</response>
     /// <response code="400">新增團體失敗</response>
+    [Consumes("multipart/form-data")]
     [HttpPost]
-    public async Task<IActionResult> PostGroup([FromBody] GroupCreate groupCreate)
+    public async Task<IActionResult> PostGroup([FromForm] GroupCreate groupCreate)
     {
+      string _method = "新增團體";
       string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
       _logger.LogInformation(LogEvent.process, $"用戶：{memberId}，執行{this._program}新增");
       try
       {
+        Image image = await _fileService.UploadImage("group", groupCreate.avatar);
+        await _imageService.PostImage(image);
         Group group = _mapper.Map<Group>(groupCreate);
-        string groupId = await _groupService.PostGroup(group);
-        _logger.LogInformation(LogEvent.create, $"用戶：{memberId}，新增團體成功，團體編號：{groupId}");
-        return Ok(new { message = "新增團體成功" });
+        group.avatar = Path.Combine(api, image.id.ToString());
+        await _groupService.PostGroup(group);
+        return Ok(new { message = $"{_method}成功" });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.BadRequest, $"用戶:{memberId}，新增團體失敗");
-        throw new AppException("新增團體失敗");
+        _logger.LogError(LogEvent.error, $"執行{_method} 出現輸入的內容有誤");
+        throw new AppException($"{_method}失敗");
       }
     }
 

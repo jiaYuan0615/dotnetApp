@@ -90,6 +90,25 @@ namespace dotnetApp.Controllers
       }
     }
 
+    [HttpGet]
+    public IActionResult GetPersonalInfo()
+    {
+      string _method = "取得個人資訊";
+      string id = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      try
+      {
+        Member data = _memberService.GetAssignMemberById(Guid.Parse(id));
+        if (data == null) return NotFound(new { message = "找不到該使用者" });
+        MemberRead member = _mapper.Map<MemberRead>(data);
+        return Ok(new { member });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"用戶:[{id.ToString()}]執行{_method}，發生錯誤");
+        throw new AppException("執行發生例外錯誤");
+      }
+    }
+
     // GET api/member/{id}
     /// <summary>
     /// 查詢特定使用者
@@ -102,7 +121,7 @@ namespace dotnetApp.Controllers
     [HttpGet("{id}")]
     public IActionResult GetAssignMember(string id)
     {
-      string _method = "取得個人資訊";
+      string _method = "取得特定個人資訊";
       try
       {
         Member data = _memberService.GetAssignMemberById(Guid.Parse(id));
@@ -167,7 +186,7 @@ namespace dotnetApp.Controllers
           _logger.LogError(LogEvent.NotFound, $"尚未註冊的電子郵件[{memberLogin.email}]嘗試登入");
           return NotFound(new { message = "找不到該使用者" });
         }
-        _logger.LogInformation(LogEvent.process, $"用戶:[{member.id}]，執行[Post api/member/login]");
+        _logger.LogInformation(LogEvent.process, $"用戶:[{member.id}]，執行{_method}");
         bool verified = _passwordService.CheckPassword(memberLogin.password, member.password);
         if (!verified)
         {

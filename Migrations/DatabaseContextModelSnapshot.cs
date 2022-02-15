@@ -126,6 +126,47 @@ namespace dotnetApp.Migrations
                     b.ToTable(null);
                 });
 
+            modelBuilder.Entity("dotnetApp.Dtos.Singer.SingerGroup", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("avatar")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("birth")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("country")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("gender")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("groupCreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("groupId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("groupName")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("groupupdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("nickname")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable(null);
+                });
+
             modelBuilder.Entity("dotnetApp.Dtos.Singer.SingerSound", b =>
                 {
                     b.Property<string>("id")
@@ -233,6 +274,13 @@ namespace dotnetApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("avatar")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("biography")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("createdAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
@@ -242,6 +290,10 @@ namespace dotnetApp.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("publishYear")
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)");
+
                     b.Property<DateTime>("updatedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
@@ -249,6 +301,35 @@ namespace dotnetApp.Migrations
                     b.HasKey("id");
 
                     b.ToTable("groups");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Group_Sound", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("groupId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("soundId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("updatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("groupId");
+
+                    b.HasIndex("soundId");
+
+                    b.ToTable("group_sound");
                 });
 
             modelBuilder.Entity("dotnetApp.Models.Image", b =>
@@ -486,8 +567,8 @@ namespace dotnetApp.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("biography")
-                        .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("birth")
                         .HasColumnType("datetime(6)");
@@ -628,6 +709,25 @@ namespace dotnetApp.Migrations
                         .IsRequired();
 
                     b.Navigation("Collection");
+
+                    b.Navigation("Sound");
+                });
+
+            modelBuilder.Entity("dotnetApp.Models.Group_Sound", b =>
+                {
+                    b.HasOne("dotnetApp.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("groupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnetApp.Models.Sound", "Sound")
+                        .WithMany()
+                        .HasForeignKey("soundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
 
                     b.Navigation("Sound");
                 });

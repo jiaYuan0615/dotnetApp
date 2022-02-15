@@ -39,5 +39,13 @@ namespace dotnetApp.Services
       };
       return image;
     }
+
+    public Boolean DeleteImage(string path)
+    {
+      if (!File.Exists(path)) return false;
+      File.Delete(path);
+      return true;
+    }
   }
+
 }

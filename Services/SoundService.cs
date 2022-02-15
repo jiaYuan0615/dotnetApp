@@ -8,15 +8,7 @@ using dotnetApp.Models;
 
 namespace dotnetApp.Services
 {
-  public interface ISoundService
-  {
-    Sound GetAssignSound(Guid id);
-    IEnumerable<Sound> GetSound();
-    Task<string> PostSound(Sound sound);
-    Task UpdateSound(Sound sound, SoundUpdate soundUpdate);
-    Task DeleteSound(Sound sound);
-  }
-  public class SoundService : ISoundService
+  public class SoundService
   {
     private readonly DatabaseContext _databaseContext;
     public SoundService(DatabaseContext databaseContext)
@@ -43,9 +35,9 @@ namespace dotnetApp.Services
       return sound;
     }
 
-    public IEnumerable<Sound> GetSound()
+    public List<Sound> GetSound()
     {
-      var sound = _databaseContext.Sounds.ToList();
+      List<Sound> sound = _databaseContext.Sounds.ToList();
       return sound;
     }
     public IEnumerable<Sound> GetSound(bool isCover)

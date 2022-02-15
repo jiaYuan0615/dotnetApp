@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnetApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,6 +17,12 @@ namespace dotnetApp.Migrations
                 {
                     id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    biography = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    publishYear = table.Column<string>(type: "varchar(7)", maxLength: 7, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    avatar = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
@@ -175,7 +181,7 @@ namespace dotnetApp.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     avatar = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    biography = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: true)
+                    biography = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     groupId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     nickname = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: false)
@@ -288,6 +294,36 @@ namespace dotnetApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "group_sound",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    groupId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    soundId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    createdAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    updatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_group_sound", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_group_sound_groups_groupId",
+                        column: x => x.groupId,
+                        principalTable: "groups",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_group_sound_sounds_soundId",
+                        column: x => x.soundId,
+                        principalTable: "sounds",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "singer_sound",
                 columns: table => new
                 {
@@ -363,6 +399,16 @@ namespace dotnetApp.Migrations
                 column: "memberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_group_sound_groupId",
+                table: "group_sound",
+                column: "groupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_group_sound_soundId",
+                table: "group_sound",
+                column: "soundId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_member_role_memberId",
                 table: "member_role",
                 column: "memberId");
@@ -402,6 +448,9 @@ namespace dotnetApp.Migrations
         {
             migrationBuilder.DropTable(
                 name: "collection_sound");
+
+            migrationBuilder.DropTable(
+                name: "group_sound");
 
             migrationBuilder.DropTable(
                 name: "images");

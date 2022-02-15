@@ -7,6 +7,7 @@ using dotnetApp.Dtos;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
 using dotnetApp.Services;
+using dotnetApp.Utils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,7 @@ namespace dotnetApp.Controllers
     private readonly string defaultImage = Path.GetFullPath("wwwroot/storage/404.png");
     private ILogger<ImageController> _logger;
     private readonly IMapper _mapper;
+    private readonly FileService _fileService;
     private readonly string _folder;
     private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
         {
@@ -34,12 +36,14 @@ namespace dotnetApp.Controllers
       ImageService imageService,
       IMapper mapper,
       ILogger<ImageController> logger,
+      FileService fileService,
       IWebHostEnvironment env
       )
     {
       _imageService = imageService;
       _logger = logger;
       _mapper = mapper;
+      _fileService = fileService;
       _folder = $"{env.WebRootPath}/storage/image";
     }
 
@@ -65,13 +69,38 @@ namespace dotnetApp.Controllers
     {
       try
       {
-        Image image = _mapper.Map<Image>(imageUpload);
+        // Image image = _mapper.Map<Image>(imageUpload.image);
+        Image image = await _fileService.UploadImage("image", imageUpload.image);
         await _imageService.PostImage(image);
-        return Ok(new { message = "上傳圖片成功" });
+        return Ok(new
+        {
+          message = "上傳圖片成功",
+          imageId = image.id.ToString()
+        });
       }
       catch (System.Exception)
       {
         throw new AppException("上傳圖片失敗");
+      }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteImage(string id)
+    {
+      string _method = "刪除圖片";
+      try
+      {
+        Image image = _imageService.GetAssignImageById(Guid.Parse(id));
+        if (image == null) return NotFound(new { message = "找不到圖片" });
+        bool isRemove = _fileService.DeleteImage(image.path);
+        if (!isRemove) return NotFound(new { message = "刪除圖片失敗" });
+        await _imageService.DelteImage(image);
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行{_method} 出現例外錯誤");
+        throw new AppException($"{_method}失敗");
       }
     }
   }

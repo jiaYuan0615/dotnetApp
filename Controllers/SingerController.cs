@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Dtos.Singer;
+using dotnetApp.Dvos.Singer;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
 using dotnetApp.Services;
 using dotnetApp.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,16 +26,26 @@ namespace dotnetApp.Controllers
     private readonly IMapper _mapper;
     private readonly ILogger<SingerController> _logger;
     private readonly SingerService _singerService;
-
+    private readonly FileService _fileService;
+    private readonly ImageService _imageService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private string api;
     public SingerController(
       IMapper mapper,
       ILogger<SingerController> logger,
-      SingerService singerService
+      SingerService singerService,
+      FileService fileService,
+      ImageService imageService,
+      IHttpContextAccessor httpContextAccessor
     )
     {
       _mapper = mapper;
       _logger = logger;
       _singerService = singerService;
+      _fileService = fileService;
+      _imageService = imageService;
+      _httpContextAccessor = httpContextAccessor;
+      api = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}/api/image";
     }
 
     // api/singer
@@ -42,8 +57,11 @@ namespace dotnetApp.Controllers
     [HttpGet]
     public IActionResult GetSinger()
     {
-      IEnumerable<Singer> data = _singerService.GetSinger();
-      List<SingerRead> singer = _mapper.Map<List<SingerRead>>(data);
+      List<SingerGroup> data = _singerService.GetSinger();
+      List<SingerGroups> singer = data
+      .GroupBy(x => x.id)
+      .Select(x => _mapper.Map<SingerGroups>(x))
+      .ToList();
       return Ok(new { singer });
     }
 
@@ -64,26 +82,32 @@ namespace dotnetApp.Controllers
       return Ok(new { singer });
     }
 
-    // Post api/group
+    // Post api/singer
     /// <summary>
     /// 新增歌手
     /// </summary>
     /// <returns>新增歌手</returns>
     /// <response code="200">新增歌手成功</response>
     /// <response code="400">新增歌手失敗</response>
+    [Consumes("multipart/form-data")]
+    [Authorize]
     [HttpPost]
-    public async Task<IActionResult> PostSinger([FromBody] SingerCreate singerCreate)
+    public async Task<IActionResult> PostSinger([FromForm] SingerCreate singerCreate)
     {
+      string _method = "新增歌手";
       try
       {
+        Image image = await _fileService.UploadImage("singer", singerCreate.avatar);
+        await _imageService.PostImage(image);
         Singer singer = _mapper.Map<Singer>(singerCreate);
+        singer.avatar = Path.Combine(api, image.id.ToString());
         await _singerService.PostSinger(singer);
-        return Ok(new { message = "新增歌手成功" });
+        return Ok(new { message = $"{_method}成功" });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.error, @"執行 [Post api/singer] 出現例外錯誤");
-        throw new AppException("新增歌手失敗");
+        _logger.LogError(LogEvent.error, $"執行{_method} 出現輸入的內容有誤");
+        throw new AppException($"{_method}失敗");
       }
     }
 
@@ -98,17 +122,18 @@ namespace dotnetApp.Controllers
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSinger(string id)
     {
+      string _method = "刪除歌手";
       try
       {
         Singer singer = _singerService.GetAssignSinger(Guid.Parse(id));
         if (singer == null) return NotFound(new { message = "找不到歌手" });
         await _singerService.DeleteSinger(singer);
-        return Ok(new { message = "刪除歌手成功" });
+        return Ok(new { message = $"{_method}成功" });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.error, $@"執行 [Delete api/singer/{id}] 出現例外錯誤");
-        throw new AppException("刪除歌手失敗");
+        _logger.LogError(LogEvent.error, $"執行{_method} 出現例外錯誤");
+        throw new AppException($"{_method}失敗");
       }
     }
   }

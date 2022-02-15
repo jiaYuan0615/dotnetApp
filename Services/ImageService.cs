@@ -27,5 +27,11 @@ namespace dotnetApp.Services
       _databaseContext.Images.Add(image);
       await _databaseContext.SaveChangesAsync();
     }
+
+    public async Task DelteImage(Image image)
+    {
+      _databaseContext.Images.Remove(image);
+      await _databaseContext.SaveChangesAsync();
+    }
   }
 }

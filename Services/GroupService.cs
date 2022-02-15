@@ -9,18 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
 {
-  public interface IGroupService
-  {
-    List<Group> GetGroup();
-    List<GroupSinger> GetGroupSingers();
-    List<GroupSinger> GetAssginGroupSingers(string id);
-    Group GetAssignGroup(Guid id);
-    Task<string> PostGroup(Group group);
-    Task UpdateGroup(Group group, GroupUpdate groupUpdate);
-    Task UpdateGroup();
-    Task DeleteGroup(string id);
-  }
-  public class GroupService : IGroupService
+  public class GroupService
   {
     private readonly DatabaseContext _databaseContext;
     public GroupService(DatabaseContext databaseContext)
@@ -95,11 +84,10 @@ namespace dotnetApp.Services
       return groupSinger;
     }
 
-    public async Task<string> PostGroup(Group group)
+    public async Task PostGroup(Group group)
     {
       _databaseContext.Groups.Add(group);
       await _databaseContext.SaveChangesAsync();
-      return group.id.ToString();
     }
 
     public async Task UpdateGroup(Group group, GroupUpdate groupUpdate)

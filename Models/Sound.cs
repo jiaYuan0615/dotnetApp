@@ -28,6 +28,7 @@ namespace dotnetApp.Models
     #region m:n
     // public ICollection<Singer> Singers { get; set; }
     // public ICollection<Collection> Collections { get; set; }
+    // public ICollection<Group> Groups { get; set; }
     #endregion
   }
 }

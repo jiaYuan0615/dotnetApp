@@ -1,11 +1,12 @@
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace dotnetApp.Dtos.Singer
 {
   public class SingerCreate
   {
     public string name { get; set; }
-    public string avatar { get; set; }
+    public IFormFile avatar { get; set; }
     public string biography { get; set; }
     public Guid groupId { get; set; }
     public string nickname { get; set; }

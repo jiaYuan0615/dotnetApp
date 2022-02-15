@@ -15,9 +15,8 @@ namespace dotnetApp.Models
     public string name { get; set; }
     [Required]
     public string avatar { get; set; }
-    [StringLength(300)]
-    public string biography { get; set; }
     [Required]
+    public string biography { get; set; }
     [ForeignKey("Group")]
     public Guid groupId { get; set; }
     [Required]

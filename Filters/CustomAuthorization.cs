@@ -9,13 +9,11 @@ namespace dotnetApp.Filters
 {
   public class CustomAuthorization : Attribute, IAuthorizationFilter
   {
-    private readonly IMemberService _memberService;
-    private readonly ISoundService _soundService;
+    private readonly MemberService _memberService;
 
-    public CustomAuthorization(IMemberService memberService, ISoundService soundService)
+    public CustomAuthorization(MemberService memberService)
     {
       _memberService = memberService;
-      _soundService = soundService;
     }
 
     public void OnAuthorization(AuthorizationFilterContext context)

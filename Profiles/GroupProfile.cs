@@ -5,6 +5,7 @@ using dotnetApp.Dtos.Group;
 using dotnetApp.Dvos.Group;
 using dotnetApp.Models;
 using dotnetApp.Dtos.Singer;
+using System;
 
 namespace dotnetApp.Profiles
 {
@@ -28,7 +29,7 @@ namespace dotnetApp.Profiles
         avatar = x.singerAvatar,
         nickname = x.singerNickname,
         gender = x.singerGender,
-        birth = x.singerBirth,
+        birth = DateTime.Parse(x.singerBirth),
         country = x.singerBirth,
       })));
 

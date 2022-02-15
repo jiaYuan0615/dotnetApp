@@ -14,6 +14,13 @@ namespace dotnetApp.Models
     [StringLength(50)]
     public string name { get; set; }
 
+    [Column(TypeName = "text")]
+    public string biography { get; set; }
+    [StringLength(7)]
+    public string publishYear { get; set; }
+    [Required]
+    public string avatar { get; set; }
+
     #region m:n
     // public ICollection<Singer> Singers { get; set; }
     #endregion
