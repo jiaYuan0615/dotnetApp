@@ -5,7 +5,6 @@ using dotnetApp.Dtos.Role;
 using dotnetApp.Dtos.Singer;
 using dotnetApp.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace dotnetApp.Context
 {
@@ -32,7 +31,6 @@ namespace dotnetApp.Context
 
     // 要使用 ORM CRUD 前需要在這邊定義
     public DbSet<Member> Members { get; set; }
-
     // 查詢會員收藏項目
     public DbSet<MemberCollection> MemberCollections { get; set; }
     public DbSet<GroupSinger> GroupSingers { get; set; }

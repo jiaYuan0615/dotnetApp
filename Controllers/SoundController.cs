@@ -104,7 +104,7 @@ namespace dotnetApp.Controllers
       }
     }
 
-    //PUT api/sound
+    //PUT api/sound/{id}
     /// <summary>
     /// 修改歌曲資訊
     /// </summary>
@@ -119,7 +119,7 @@ namespace dotnetApp.Controllers
       string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
       try
       {
-        var sound = _soundService.GetAssignSound(Guid.Parse(id));
+        Sound sound = _soundService.GetAssignSound(Guid.Parse(id));
         if (sound == null) throw new NotFoundException("找不到該歌曲");
         await _soundService.UpdateSound(sound, soundUpdate);
         return Ok(new { message = "更新歌曲成功" });

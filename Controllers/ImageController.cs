@@ -47,6 +47,7 @@ namespace dotnetApp.Controllers
       _folder = $"{env.WebRootPath}/storage/image";
     }
 
+    // Get api/image/{id}
     [HttpGet("{id}")]
     public IActionResult GetImage(string id)
     {
@@ -64,23 +65,25 @@ namespace dotnetApp.Controllers
       }
     }
 
+    // Post api/image
     [HttpPost]
     public async Task<IActionResult> PostImage([FromForm] ImageUpload imageUpload)
     {
+      string _method = "上傳圖片";
       try
       {
         // Image image = _mapper.Map<Image>(imageUpload.image);
-        Image image = await _fileService.UploadImage("image", imageUpload.image);
+        Image image = _fileService.UploadImage("image", imageUpload.image);
         await _imageService.PostImage(image);
         return Ok(new
         {
-          message = "上傳圖片成功",
+          message = $"{_method}成功",
           imageId = image.id.ToString()
         });
       }
       catch (System.Exception)
       {
-        throw new AppException("上傳圖片失敗");
+        throw new AppException($"{_method}失敗");
       }
     }
 

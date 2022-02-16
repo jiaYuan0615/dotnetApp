@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using dotnetApp.Context;
 using dotnetApp.Dtos.Sound;
 using dotnetApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
 {
@@ -31,18 +32,22 @@ namespace dotnetApp.Services
 
     public Sound GetAssignSound(Guid id)
     {
-      var sound = _databaseContext.Sounds.SingleOrDefault(o => o.id == id);
-      return sound;
+      return _databaseContext.Sounds
+                .AsNoTracking()
+                .SingleOrDefault(o => o.id == id);
     }
 
     public List<Sound> GetSound()
     {
-      List<Sound> sound = _databaseContext.Sounds.ToList();
+      List<Sound> sound = _databaseContext.Sounds
+                          .AsNoTracking()
+                          .OrderByDescending(x => x.createdAt)
+                          .ToList();
       return sound;
     }
     public IEnumerable<Sound> GetSound(bool isCover)
     {
-      var sound = _databaseContext.Sounds.Where(o => o.isCover == isCover).ToList();
+      IEnumerable<Sound> sound = _databaseContext.Sounds.Where(o => o.isCover == isCover).ToList();
       return sound;
     }
 

@@ -151,7 +151,7 @@ namespace dotnetApp.Controllers
       string _method = "使用者註冊";
       try
       {
-        Image image = await _fileService.UploadImage("avatar", memberRegister.avatar);
+        Image image = _fileService.UploadImage("avatar", memberRegister.avatar);
         await _imageService.PostImage(image);
         Member member = _mapper.Map<Member>(memberRegister);
         member.avatar = Path.Combine(api, image.id.ToString());
@@ -234,7 +234,7 @@ namespace dotnetApp.Controllers
           Guid replace = Guid.Parse(member.avatar.Replace($"{api}/", ""));
           Image previousImage = _imageService.GetAssignImageById(replace);
           System.IO.File.Delete(previousImage.path);
-          Image image = await _fileService.UploadImage("avatar", memberUpdate.avatar);
+          Image image = _fileService.UploadImage("avatar", memberUpdate.avatar);
           await _imageService.PostImage(image);
           // consider whether remove old image
           avatar = Path.Combine(api, image.id.ToString());

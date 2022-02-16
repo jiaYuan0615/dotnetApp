@@ -9,21 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApp.Services
 {
-
-  public interface IMemberService
-  {
-    List<Member> GetMember();
-    Member GetAssignMemberById(Guid id);
-    Task RegisterMember(Member member);
-    Member GetAssignMemberByEmail(string email);
-    Task UpdateMember();
-    Task UpdateMember(Member member, MemberUpdate memberUpdate);
-    Task DeleteMember(Member member);
-    List<Member> GetMemberCollectionItem(string id);
-    List<MemberCollection> GetMemberCollection(string id);
-    List<MemberCollection> GetMemberCollection();
-  }
-  public class MemberService : IMemberService
+  public class MemberService
   {
     private readonly DatabaseContext _databaseContext;
 

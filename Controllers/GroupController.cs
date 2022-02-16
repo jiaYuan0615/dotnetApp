@@ -100,7 +100,7 @@ namespace dotnetApp.Controllers
       _logger.LogInformation(LogEvent.process, $"用戶：{memberId}，執行{this._program}新增");
       try
       {
-        Image image = await _fileService.UploadImage("group", groupCreate.avatar);
+        Image image = _fileService.UploadImage("group", groupCreate.avatar);
         await _imageService.PostImage(image);
         Group group = _mapper.Map<Group>(groupCreate);
         group.avatar = Path.Combine(api, image.id.ToString());
@@ -116,7 +116,7 @@ namespace dotnetApp.Controllers
 
     // Put api/group/{id}
     /// <summary>
-    /// 更新特定團體
+    /// 更新團體
     /// </summary>
     /// <param name="id">團體編號</param>
     /// <param name="groupUpdate"></param>
@@ -127,24 +127,23 @@ namespace dotnetApp.Controllers
     [HttpPut("id")]
     public async Task<IActionResult> UpdateGroup(string id, [FromBody] GroupUpdate groupUpdate)
     {
-      string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-      _logger.LogInformation(LogEvent.process, $"用戶：{memberId}，執行{this._program}更新");
+      string _method = "更新團體";
       try
       {
-        Group data = _groupService.GetAssignGroup(Guid.Parse(id));
-        if (data == null)
+        Group group = _groupService.GetAssignGroup(Guid.Parse(id));
+        if (group == null)
         {
-          _logger.LogInformation(LogEvent.NotFound, $"用戶：{memberId}，出現找不到團體錯誤");
           throw new NotFoundException("找不到該團體");
         }
-        await _groupService.UpdateGroup(data, groupUpdate);
-        _logger.LogInformation(LogEvent.update, $"用戶：{memberId}，更新編號為{id}的團體成功");
-        return Ok(new { message = "更新團體成功" });
+        _mapper.Map(groupUpdate, group);
+        // await _groupService.UpdateGroup(data, groupUpdate);
+        await _groupService.UpdateGroup();
+        return Ok(new { message = $"{_method}成功" });
       }
       catch (Exception)
       {
-        _logger.LogError(LogEvent.BadRequest, $"用戶：{memberId}，更新團體失敗");
-        throw new AppException("更新團體失敗");
+        _logger.LogError(LogEvent.error, $"{_method}失敗");
+        throw new AppException($"{_method}失敗");
       }
     }
 

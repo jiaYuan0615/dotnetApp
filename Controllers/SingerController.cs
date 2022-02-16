@@ -97,7 +97,7 @@ namespace dotnetApp.Controllers
       string _method = "新增歌手";
       try
       {
-        Image image = await _fileService.UploadImage("singer", singerCreate.avatar);
+        Image image = _fileService.UploadImage("singer", singerCreate.avatar);
         await _imageService.PostImage(image);
         Singer singer = _mapper.Map<Singer>(singerCreate);
         singer.avatar = Path.Combine(api, image.id.ToString());
@@ -107,6 +107,29 @@ namespace dotnetApp.Controllers
       catch (Exception)
       {
         _logger.LogError(LogEvent.error, $"執行{_method} 出現輸入的內容有誤");
+        throw new AppException($"{_method}失敗");
+      }
+    }
+
+
+    // Put api/singer/{id}
+    /// <summary>
+    /// 修改歌手
+    /// </summary>
+    public async Task<IActionResult> PutSinger(string id, [FromBody] SingerUpdate singerUpdate)
+    {
+      string _method = "修改歌手";
+      try
+      {
+        Singer singer = _singerService.GetAssignSinger(Guid.Parse(id));
+        if (singer == null) return NotFound(new { message = "找不到歌手" });
+        _mapper.Map(singerUpdate, singer);
+        await _singerService.UpdateSinger();
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行{_method} 出現例外錯誤");
         throw new AppException($"{_method}失敗");
       }
     }

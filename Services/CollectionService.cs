@@ -9,17 +9,7 @@ using dotnetApp.Models;
 
 namespace dotnetApp.Services
 {
-  public interface ICollectionService
-  {
-    List<Collection> GetCollection(Guid id);
-    Collection GetAssignCollectionById(Guid id);
-    List<CollectionSound> GetCollectionSound(string id, string memberId);
-    Task<string> PostCollection(Collection collection);
-    Task UpdateCollection(Collection collection, CollectionUpdate collectionUpdate);
-    Task DeleteCollection(Collection collection);
-
-  }
-  public class CollectionService : ICollectionService
+  public class CollectionService
   {
     private readonly DatabaseContext _databaseContext;
 
@@ -28,9 +18,13 @@ namespace dotnetApp.Services
       _databaseContext = databaseContext;
     }
 
-    public async Task DeleteCollection(Collection collection)
+    public async Task DeleteCollection(Guid id)
     {
-      _databaseContext.Remove(collection);
+      Collection collections = _databaseContext.Collections
+                        .Where(x => x.id == id)
+                        .Include(x => x.Member)
+                        .FirstOrDefault();
+      _databaseContext.Remove(collections);
       await _databaseContext.SaveChangesAsync();
     }
 
@@ -41,10 +35,10 @@ namespace dotnetApp.Services
 
     public List<Collection> GetCollection(Guid id)
     {
-      var collection = _databaseContext.Collections
-      .AsNoTracking()
-      .Where(x => x.memberId == id)
-      .ToList();
+      List<Collection> collection = _databaseContext.Collections
+                                      .AsNoTracking()
+                                      .Where(x => x.memberId == id)
+                                      .ToList();
       return collection;
     }
 
@@ -65,23 +59,46 @@ namespace dotnetApp.Services
         collections.memberId = {memberId}
         AND collections.id = {id}";
       List<CollectionSound> collectionSound = _databaseContext.CollectionSounds
-      .FromSqlInterpolated(sql)
-      .AsNoTracking()
-      .ToList();
+                                                .FromSqlInterpolated(sql)
+                                                .AsNoTracking()
+                                                .ToList();
 
       return collectionSound;
     }
 
     public async Task<string> PostCollection(Collection collection)
     {
-      _databaseContext.Add(collection);
+      _databaseContext.Collections.Add(collection);
       await _databaseContext.SaveChangesAsync();
       return collection.id.ToString();
+    }
+
+    public async Task PostItemToCollection(Collection_Sound collection_Sound)
+    {
+      _databaseContext.Collection_Sound.Add(collection_Sound);
+      await _databaseContext.SaveChangesAsync();
+    }
+
+    public async Task PostMultiItemToCollection(List<Collection_Sound> collection_Sounds)
+    {
+      await _databaseContext.Collection_Sound.AddRangeAsync(collection_Sounds);
+      await _databaseContext.SaveChangesAsync();
     }
 
     public async Task UpdateCollection(Collection collection, CollectionUpdate collectionUpdate)
     {
       _databaseContext.Entry(collection).CurrentValues.SetValues(collectionUpdate);
+      await _databaseContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteMultiItemToCollection(List<Collection_Sound> collection_Sounds)
+    {
+      _databaseContext.Collection_Sound.RemoveRange(collection_Sounds);
+      await _databaseContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateCollection()
+    {
       await _databaseContext.SaveChangesAsync();
     }
   }

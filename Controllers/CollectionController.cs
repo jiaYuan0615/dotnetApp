@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
+using dotnetApp.Dtos.Sound;
 using dotnetApp.Dvos.Collection;
 using dotnetApp.Dvos.Member;
 using dotnetApp.Filters;
@@ -64,31 +65,31 @@ namespace dotnetApp.Controllers
       .Select(x => _mapper.Map<MemberCollections>(x));
 
 
-      IEnumerable<MemberCollections> members = data
-      .GroupBy(x => x.id)
-      .Select(x =>
-      {
-        string id = x.FirstOrDefault().id.ToString();
-        string email = x.FirstOrDefault().email;
-        string name = x.FirstOrDefault().name;
-        string gender = x.FirstOrDefault().gender;
-        List<CollectionRead> collections = x.Select(o =>
-        {
-          return new CollectionRead
-          {
-            id = o.collectionId.ToString(),
-            name = o.collectionName
-          };
-        }).ToList();
-        return new MemberCollections
-        {
-          id = id,
-          email = email,
-          name = name,
-          gender = gender,
-          collections = collections,
-        };
-      });
+      // IEnumerable<MemberCollections> members = data
+      // .GroupBy(x => x.id)
+      // .Select(x =>
+      // {
+      //   string id = x.FirstOrDefault().id.ToString();
+      //   string email = x.FirstOrDefault().email;
+      //   string name = x.FirstOrDefault().name;
+      //   string gender = x.FirstOrDefault().gender;
+      //   List<CollectionRead> collections = x.Select(o =>
+      //   {
+      //     return new CollectionRead
+      //     {
+      //       id = o.collectionId.ToString(),
+      //       name = o.collectionName
+      //     };
+      //   }).ToList();
+      //   return new MemberCollections
+      //   {
+      //     id = id,
+      //     email = email,
+      //     name = name,
+      //     gender = gender,
+      //     collections = collections,
+      //   };
+      // });
       return Ok(new { member });
     }
 
@@ -101,7 +102,7 @@ namespace dotnetApp.Controllers
     [HttpGet]
     public IActionResult GetCollection()
     {
-      string _method = "查詢個人收藏項目";
+      string _method = "查詢個人收藏資料夾";
       try
       {
         string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
@@ -133,9 +134,9 @@ namespace dotnetApp.Controllers
         string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
         List<CollectionSound> data = _collectionService.GetCollectionSound(id, memberId);
         CollectionSounds collection = data
-        .GroupBy(x => x.id)
-        .Select(x => _mapper.Map<CollectionSounds>(x))
-        .FirstOrDefault();
+                .GroupBy(x => x.id)
+                .Select(x => _mapper.Map<CollectionSounds>(x))
+                .FirstOrDefault();
         return Ok(new { collection });
       }
       catch (Exception)
@@ -144,7 +145,6 @@ namespace dotnetApp.Controllers
         throw new AppException("執行發生例外錯誤");
       }
     }
-
 
     // POST api/collection
     /// <summary>
@@ -171,6 +171,134 @@ namespace dotnetApp.Controllers
       catch (Exception)
       {
         _logger.LogError(LogEvent.error, $"用戶[{memberId}]，{_method}失敗");
+        throw new AppException($"{_method}失敗");
+      }
+    }
+
+    // Put api/collection/{id}
+    /// <summary>
+    /// 更新收藏資料夾
+    /// </summary>
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCollection(string id, [FromBody] CollectionUpdate collectionUpdate)
+    {
+
+      string _method = "更新收藏資料夾";
+      try
+      {
+        Guid collectionId = Guid.Parse(id);
+        Collection collection = _collectionService.GetAssignCollectionById(collectionId);
+        _mapper.Map(collectionUpdate, collection);
+        await _collectionService.UpdateCollection();
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行{_method}發生錯誤");
+        throw new AppException("執行發生例外錯誤");
+      }
+
+    }
+
+    // Post api/collection/item/{id}
+    /// <summary>
+    /// 新增歌曲至指定資料夾
+    /// </summary>
+    [HttpPost("item/{id}")]
+    public async Task<IActionResult> PostItemToCollection(string id, [FromBody] SoundItem soundItem)
+    {
+      string _method = "新增歌曲至資料夾";
+      string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      try
+      {
+        Guid collectionId = Guid.Parse(id);
+        Collection collection = _collectionService.GetAssignCollectionById(collectionId);
+        if (collection == null) return NotFound(new { message = "找不到收藏" });
+        Collection_Sound cs = new Collection_Sound()
+        {
+          collectionId = collectionId,
+          soundId = soundItem.id
+        };
+        await _collectionService.PostItemToCollection(cs);
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行{_method}發生錯誤");
+        throw new AppException("執行發生例外錯誤");
+      }
+    }
+
+
+    // Put api/collection/item/{id}
+    /// <summary>
+    /// 更新收藏資料夾內的項目
+    /// </summary>
+    [HttpPut("item/{id}")]
+    public async Task<IActionResult> UpdateCollectionItem(string id, [FromBody] SoundItem[] soundItems)
+    {
+      string _method = "更新收藏資料夾內的項目";
+      string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
+      try
+      {
+        List<CollectionSound> cs = _collectionService.GetCollectionSound(id, memberId);
+        List<string> origin = cs.Select(x => x.soundId).ToList();
+        List<string> update = soundItems.Select(x => x.id.ToString()).ToList();
+        if (cs.Count() < 1) return NotFound(new { message = "找不到收藏" });
+        IEnumerable<string> needChage = CommonHelpers.xor(origin, update);
+        if (needChage.Count() > 0)
+        {
+          // 兩個都有的
+          List<string> needPreserve = origin.Intersect(update).ToList();
+          List<string> needInsert = update.Except(needPreserve).ToList();
+          List<string> needDelete = origin.Except(needPreserve).ToList();
+          if (needInsert.Count() > 0)
+          {
+            List<Collection_Sound> insertItem = needInsert.Select(x => new Collection_Sound
+            {
+              collectionId = Guid.Parse(id),
+              soundId = Guid.Parse(x)
+            }).ToList();
+            await _collectionService.PostMultiItemToCollection(insertItem);
+          }
+          if (needDelete.Count() > 0)
+          {
+            List<Collection_Sound> deleteItem = needDelete.Select(x => new Collection_Sound
+            {
+              collectionId = Guid.Parse(id),
+              soundId = Guid.Parse(x)
+            }).ToList();
+            await _collectionService.DeleteMultiItemToCollection(deleteItem);
+          }
+        }
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行{_method}發生錯誤");
+        throw new AppException("執行發生例外錯誤");
+      }
+    }
+
+    // Delete api/collection/{id}
+    /// <summary>
+    /// 刪除收藏資料夾
+    /// </summary>
+    [HttpDelete("id")]
+    public async Task<IActionResult> DeleteCollection(string id)
+    {
+      string _method = "刪除收藏";
+      try
+      {
+        Guid targetId = Guid.Parse(id);
+        Collection collection = _collectionService.GetAssignCollectionById(targetId);
+        if (collection == null) return NotFound(new { message = "找不到收藏" });
+        await _collectionService.DeleteCollection(targetId);
+        return Ok(new { message = $"{_method}成功" });
+      }
+      catch (System.Exception)
+      {
+        _logger.LogError(LogEvent.error, $"執行{_method} 出現例外錯誤");
         throw new AppException($"{_method}失敗");
       }
     }
