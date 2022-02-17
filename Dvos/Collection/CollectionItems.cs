@@ -4,11 +4,10 @@ using dotnetApp.Dtos.Sound;
 
 namespace dotnetApp.Dvos.Collection
 {
-  public class CollectionSounds
+  public class CollectionItems
   {
     public string id { get; set; }
     public string name { get; set; }
-    public List<SoundList> sounds { get; set; }
-    public string createdAt { get; set; }
+    public List<string> sounds { get; set; }
   }
 }

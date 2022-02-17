@@ -21,7 +21,7 @@ namespace dotnetApp.Profiles
       .ForMember(x => x.id, y => y.MapFrom(o => o.FirstOrDefault().id))
       .ForMember(x => x.name, y => y.MapFrom(o => o.FirstOrDefault().name))
       .ForMember(x => x.createdAt, y => y.MapFrom(o => o.FirstOrDefault().createdAt))
-      .ForMember(x => x.sounds, y => y.MapFrom(o => o.Select(v => new SoundList { id = v.soundId, name = v.soundName, publishYear = v.soundPublishYear })));
+      .ForMember(x => x.sounds, y => y.MapFrom(o => o.Select(v => new SoundList { id = v.soundId.ToString(), name = v.soundName, publishYear = v.soundPublishYear })));
     }
   }
 }

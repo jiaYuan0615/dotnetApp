@@ -33,11 +33,21 @@ namespace dotnetApp.Services
       return _databaseContext.Collections.Find(id);
     }
 
-    public List<Collection> GetCollection(Guid id)
+    public List<CollectionItem> GetCollection(Guid id)
     {
-      List<Collection> collection = _databaseContext.Collections
+      FormattableString sql = $@"
+      SELECT
+        collections.id,
+        collections.`name`,
+        `sounds`.id AS soundId
+      FROM
+        collections
+        LEFT JOIN ( collection_sound AS cs INNER JOIN `sounds` ON `sounds`.id = cs.soundId ) ON cs.collectionId = collections.id
+      WHERE
+        collections.memberId = {id}";
+      List<CollectionItem> collection = _databaseContext.CollectionItems
+                                      .FromSqlInterpolated(sql)
                                       .AsNoTracking()
-                                      .Where(x => x.memberId == id)
                                       .ToList();
       return collection;
     }
@@ -50,7 +60,7 @@ namespace dotnetApp.Services
         collections.`name`,
         `sounds`.id AS soundId,
         `sounds`.`name` AS soundName,
-        `sounds`.publishYear AS soundPublishYear
+        `sounds`.publishYear AS soundPublishYear,
         collections.createdAt
       FROM
         collections

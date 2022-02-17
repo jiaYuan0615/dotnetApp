@@ -213,8 +213,8 @@ namespace dotnetApp.Controllers
     /// <response code="200">更新使用者成功</response>
     /// <response code="400">更新使用者失敗</response>
     /// <response code="404">找不到該使用者</response>
-    [HttpPut]
     [Consumes("multipart/form-data")]
+    [HttpPut]
     public async Task<IActionResult> UpdateMember([FromForm] MemberUpdate memberUpdate)
     {
       string _method = "修改個人資訊";
@@ -229,7 +229,7 @@ namespace dotnetApp.Controllers
           throw new NotFoundException("找不到該使用者");
         }
         string avatar = member.avatar;
-        if (memberUpdate.avatar.Length > 0)
+        if (memberUpdate.avatar != null)
         {
           Guid replace = Guid.Parse(member.avatar.Replace($"{api}/", ""));
           Image previousImage = _imageService.GetAssignImageById(replace);
@@ -244,7 +244,6 @@ namespace dotnetApp.Controllers
         _mapper.Map(memberUpdate, member);
         member.avatar = avatar;
         await _memberService.UpdateMember();
-        // await _memberService.UpdateMember(data, memberUpdate);
         _logger.LogInformation(LogEvent.update, $"用戶[{id}]，{_method}成功");
         return Ok(new { message = $"{_method}成功" });
       }
@@ -255,24 +254,34 @@ namespace dotnetApp.Controllers
       }
     }
 
+    //PUT api/member/password
+    /// <summary>
+    /// 變更密碼
+    /// </summary>
+    [HttpPut("password")]
     public async Task<IActionResult> UpdataPassword([FromBody] MemberUpdatePassword memberUpdatePassword)
     {
       string id = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-      string _method = "變更使用者密碼";
+      string _method = "變更密碼";
       try
       {
         Member member = _memberService.GetAssignMemberById(Guid.Parse(id));
+        bool checkPasswordValid = _passwordService.CheckPassword(memberUpdatePassword.password, member.password);
+        if (!checkPasswordValid)
+        {
+          throw new AppException("輸入的密碼有誤");
+        }
         _mapper.Map(memberUpdatePassword, member);
+        member.password = _passwordService.HashPassword(memberUpdatePassword.newPassword);
         await _memberService.UpdateMember();
         _logger.LogInformation(LogEvent.update, $"用戶[{id}]，{_method}成功");
-        return Ok(new { message = $"{_method}成功" });
+        return Ok(new { message = $"{_method}成功，請重新登入" });
       }
       catch (System.Exception)
       {
         _logger.LogError(LogEvent.BadRequest, $"用戶[{id}]，{_method}失敗");
         throw new AppException($"{_method}失敗");
       }
-      throw new NotImplementedException();
     }
   }
 }

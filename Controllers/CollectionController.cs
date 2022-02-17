@@ -106,8 +106,11 @@ namespace dotnetApp.Controllers
       try
       {
         string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-        List<Collection> items = _collectionService.GetCollection(Guid.Parse(memberId));
-        IEnumerable<CollectionRead> collection = _mapper.Map<IEnumerable<CollectionRead>>(items);
+        List<CollectionItem> items = _collectionService.GetCollection(Guid.Parse(memberId));
+        List<CollectionItems> collection = items
+                                            .GroupBy(x => x.id)
+                                            .Select(x => _mapper.Map<CollectionItems>(x))
+                                            .ToList();
         return Ok(new { collection });
       }
       catch (Exception)
@@ -242,7 +245,7 @@ namespace dotnetApp.Controllers
       try
       {
         List<CollectionSound> cs = _collectionService.GetCollectionSound(id, memberId);
-        List<string> origin = cs.Select(x => x.soundId).ToList();
+        List<string> origin = cs.Select(x => x.soundId.ToString()).ToList();
         List<string> update = soundItems.Select(x => x.id.ToString()).ToList();
         if (cs.Count() < 1) return NotFound(new { message = "找不到收藏" });
         IEnumerable<string> needChage = CommonHelpers.xor(origin, update);
