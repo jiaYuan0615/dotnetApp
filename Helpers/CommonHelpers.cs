@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using dotnetApp.Dtos;
 
 namespace dotnetApp.Helpers
 {
@@ -14,14 +15,30 @@ namespace dotnetApp.Helpers
       return items;
     }
 
-    // 判斷是否有需要更新關聯表的內容
-    public static IEnumerable<T> xor<T>(List<T> origin, List<T> update)
+    // Equals to Lodash xor
+    public static List<string> xor(List<string> origin, List<string> update)
     {
       // origin has but update doesn't have
-      var first = origin.Except(update);
+      List<string> left = origin.Except(update).ToList();
       // update has but origin doesn't have
-      var second = update.Except(origin);
-      return first.Concat(second);
+      List<string> right = update.Except(origin).ToList();
+      return left.Concat(right).ToList();
+    }
+
+
+    public static UpdateItem updateItem(List<string> origin, List<string> update)
+    {
+      List<string> combine = xor(origin, update);
+      List<string> needPreserve = origin.Intersect(update).ToList();
+      List<string> needInsert = update.Except(needPreserve).ToList();
+      List<string> needDelete = origin.Except(needPreserve).ToList();
+      UpdateItem updateItem = new UpdateItem()
+      {
+        insertItem = needInsert,
+        deleteItem = needDelete,
+        shoudUpdate = combine.Count() > 0
+      };
+      return updateItem;
     }
   }
 }

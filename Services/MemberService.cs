@@ -47,10 +47,24 @@ namespace dotnetApp.Services
       await _databaseContext.SaveChangesAsync();
     }
 
-    public Member GetAssignMemberByEmail(string email)
+    public List<MemberRole> GetMemberRole(string email)
     {
-      var member = _databaseContext.Members.Where(x => x.email == email).First();
-      return member;
+      FormattableString sql = $@"
+      SELECT
+        members.id,
+        members.email,
+        members.`password`,
+        roles.name
+      FROM
+        members
+        LEFT JOIN ( member_role AS mr INNER JOIN roles ON roles.id = mr.roleId ) ON members.id = mr.memberId
+      WHERE
+        members.email = {email}";
+      List<MemberRole> memberRoles = _databaseContext.MemberRoles
+                                      .FromSqlInterpolated(sql)
+                                      .AsNoTracking()
+                                      .ToList();
+      return memberRoles;
     }
 
     public List<Member> GetMemberCollectionItem(string id)

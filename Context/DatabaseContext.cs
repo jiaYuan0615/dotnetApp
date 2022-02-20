@@ -28,6 +28,7 @@ namespace dotnetApp.Context
       builder.Entity<RolePermission>().ToTable(null);
       builder.Entity<SingerGroup>().ToTable(null);
       builder.Entity<CollectionItem>().ToTable(null);
+      builder.Entity<MemberRole>().ToTable(null);
     }
 
     // 要使用 ORM CRUD 前需要在這邊定義
@@ -53,5 +54,6 @@ namespace dotnetApp.Context
     public DbSet<Permission_Role> Permission_Role { get; set; }
     public DbSet<Member_Role> Member_Role { get; set; }
     public DbSet<Group_Sound> Group_Sound { get; set; }
+    public DbSet<MemberRole> MemberRoles { get; set; }
   }
 }

@@ -41,6 +41,26 @@ namespace dotnetApp
       services.AddSwaggerGen(option =>
       {
         option.SwaggerDoc("v1", new OpenApiInfo { Title = "歌曲推薦系統", Version = "v1" });
+        option.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+        {
+          Description = "使用 bearer 作為開頭",
+          Name = "Authorization",
+          Type = SecuritySchemeType.ApiKey,
+          Scheme = "bearer",
+          In = ParameterLocation.Header,
+        });
+
+        option.AddSecurityRequirement(new OpenApiSecurityRequirement{
+        {
+          new OpenApiSecurityScheme{
+            Reference = new OpenApiReference{
+              Type = ReferenceType.SecurityScheme,
+              Id= "bearer"
+            },
+          },
+          new string [] {}
+          }
+        });
         // string FilePath = Path.Combine(AppContext.BaseDirectory, "dotnetApp.xml");
         string XmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         string FilePath = Path.Combine(AppContext.BaseDirectory, XmlFile);
@@ -144,6 +164,8 @@ namespace dotnetApp
       // 客製化 401 回應的其中一種方法
       // 由於是覆寫原本的中介層 所以要放在驗證之前
       app.UseCustomUnauthorizeMiddleware();
+      // Custom 403 response
+      app.UseCustomForbiddenMiddleware();
 
       app.UseAuthentication();
 

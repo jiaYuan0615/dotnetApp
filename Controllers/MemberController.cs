@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.Context;
 using dotnetApp.Dtos.Member;
+using dotnetApp.Dvos.Member;
 using dotnetApp.Filters;
 using dotnetApp.Helpers;
 using dotnetApp.Models;
@@ -178,12 +179,13 @@ namespace dotnetApp.Controllers
     public IActionResult Login([FromBody] MemberLogin memberLogin)
     {
       string _method = "使用者登入";
-      Member member = _memberService.GetAssignMemberByEmail(memberLogin.email);
+      List<MemberRole> item = _memberService.GetMemberRole(memberLogin.email);
+      MemberRole member = item.FirstOrDefault();
       try
       {
         if (member == null)
         {
-          _logger.LogError(LogEvent.NotFound, $"尚未註冊的電子郵件[{memberLogin.email}]嘗試登入");
+          _logger.LogError(LogEvent.NotFound, $"尚未註冊的電子郵件[{member.email}]嘗試登入");
           return NotFound(new { message = "找不到該使用者" });
         }
         _logger.LogInformation(LogEvent.process, $"用戶:[{member.id}]，執行{_method}");
@@ -193,8 +195,13 @@ namespace dotnetApp.Controllers
           _logger.LogError(LogEvent.error, $"用戶[{member.id}]，輸入密碼錯誤");
           throw new AppException("輸入的密碼有誤");
         }
-        string token = _jwt.yieldToken(member.id.ToString());
-        _logger.LogInformation(LogEvent.success, $"用戶[{member.id}]，執行{_method}成功");
+
+        MemberRoles memberRoles = item
+                                    .GroupBy(x => x.id)
+                                    .Select(x => _mapper.Map<MemberRoles>(x))
+                                    .FirstOrDefault();
+        string token = _jwt.yieldToken(memberRoles);
+        _logger.LogInformation(LogEvent.success, $"用戶[{memberRoles.id}]，執行{_method}成功");
         return Ok(new { message = "登入成功", token });
       }
       catch (System.Exception)

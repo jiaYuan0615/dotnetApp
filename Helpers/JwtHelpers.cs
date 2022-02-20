@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using dotnetApp.Dvos.Member;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,7 +19,7 @@ namespace dotnetApp.Helpers
       _configuration = configuration;
     }
 
-    public string yieldToken(string id, int expireHour = 24)
+    public string yieldToken(MemberRoles memberRoles, int expireHour = 24)
     {
       // 直接取值
       // var issuer = _configuration["JwtSettings:Issuer"];
@@ -34,7 +36,16 @@ namespace dotnetApp.Helpers
       // JWT 的唯一識別碼
       claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-      claims.Add(new Claim("id", id));
+      claims.Add(new Claim("id", memberRoles.id));
+
+      // 加上權限
+      foreach (string v in memberRoles.Roles)
+      {
+        // role / roles / ClaimTypes.Role 皆可
+        // Authorization(Roles="") 都讀取得到
+        claims.Add(new Claim("roles", v));
+        // claims.Add(new Claim(ClaimTypes.Role, v));
+      }
 
       var identify = new ClaimsIdentity(claims);
 

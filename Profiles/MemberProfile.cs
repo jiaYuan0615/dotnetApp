@@ -23,6 +23,10 @@ namespace dotnetApp.Profiles
       CreateMap<MemberUpdatePassword, Member>();
       CreateMap<Member, MemberUpdatePassword>();
 
+      CreateMap<IList<MemberRole>, MemberRoles>()
+      .ForMember(x => x.id, y => y.MapFrom(o => o.FirstOrDefault().id))
+      .ForMember(x => x.Roles, y => y.MapFrom(o => o.Select(v => v.name).ToList()));
+
       // 1:m
       CreateMap<IList<MemberCollection>, MemberCollections>()
       .ForMember(x => x.id, y => y.MapFrom(o => o.FirstOrDefault().id.ToString()))

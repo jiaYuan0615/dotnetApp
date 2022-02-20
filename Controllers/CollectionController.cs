@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using dotnetApp.Dtos;
 using dotnetApp.Dtos.Collection;
 using dotnetApp.Dtos.Member;
 using dotnetApp.Dtos.Sound;
@@ -245,28 +246,24 @@ namespace dotnetApp.Controllers
       try
       {
         List<CollectionSound> cs = _collectionService.GetCollectionSound(id, memberId);
+        if (cs.Count() < 1) return NotFound(new { message = "找不到收藏" });
         List<string> origin = cs.Select(x => x.soundId.ToString()).ToList();
         List<string> update = soundItems.Select(x => x.id.ToString()).ToList();
-        if (cs.Count() < 1) return NotFound(new { message = "找不到收藏" });
-        IEnumerable<string> needChage = CommonHelpers.xor(origin, update);
-        if (needChage.Count() > 0)
+        UpdateItem updateItem = CommonHelpers.updateItem(origin, update);
+        if (updateItem.shoudUpdate)
         {
-          // 兩個都有的
-          List<string> needPreserve = origin.Intersect(update).ToList();
-          List<string> needInsert = update.Except(needPreserve).ToList();
-          List<string> needDelete = origin.Except(needPreserve).ToList();
-          if (needInsert.Count() > 0)
+          if (updateItem.insertItem.Count() > 0)
           {
-            List<Collection_Sound> insertItem = needInsert.Select(x => new Collection_Sound
+            List<Collection_Sound> insertItem = updateItem.insertItem.Select(x => new Collection_Sound
             {
               collectionId = Guid.Parse(id),
               soundId = Guid.Parse(x)
             }).ToList();
             await _collectionService.PostMultiItemToCollection(insertItem);
           }
-          if (needDelete.Count() > 0)
+          if (updateItem.deleteItem.Count() > 0)
           {
-            List<Collection_Sound> deleteItem = needDelete.Select(x => new Collection_Sound
+            List<Collection_Sound> deleteItem = updateItem.deleteItem.Select(x => new Collection_Sound
             {
               collectionId = Guid.Parse(id),
               soundId = Guid.Parse(x)
