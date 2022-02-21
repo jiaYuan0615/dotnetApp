@@ -107,7 +107,7 @@ namespace dotnetApp.Controllers
       try
       {
         string memberId = User.Claims.FirstOrDefault(x => x.Type == "id").Value;
-        List<CollectionItem> items = _collectionService.GetCollection(Guid.Parse(memberId));
+        List<CollectionItem> items = _collectionService.GetCollection(memberId);
         List<CollectionItems> collection = items
                                             .GroupBy(x => x.id)
                                             .Select(x => _mapper.Map<CollectionItems>(x))
@@ -157,8 +157,6 @@ namespace dotnetApp.Controllers
     /// <response code="200">新增收藏資料夾成功</response>
     /// <response code="400">輸入的內容有誤</response>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PostCollection([FromBody] CollectionCreate collectionCreate)
     {
       string _method = "新增收藏資料夾";

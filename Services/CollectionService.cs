@@ -33,7 +33,7 @@ namespace dotnetApp.Services
       return _databaseContext.Collections.Find(id);
     }
 
-    public List<CollectionItem> GetCollection(Guid id)
+    public List<CollectionItem> GetCollection(string id)
     {
       FormattableString sql = $@"
       SELECT
@@ -46,9 +46,9 @@ namespace dotnetApp.Services
       WHERE
         collections.memberId = {id}";
       List<CollectionItem> collection = _databaseContext.CollectionItems
-                                      .FromSqlInterpolated(sql)
-                                      .AsNoTracking()
-                                      .ToList();
+                                        .FromSqlInterpolated(sql)
+                                        .AsNoTracking()
+                                        .ToList();
       return collection;
     }
 

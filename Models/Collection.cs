@@ -8,6 +8,7 @@ namespace dotnetApp.Models
   public class Collection : Time
   {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid id { get; set; } = Guid.NewGuid();
     [Required]
     [StringLength(30)]

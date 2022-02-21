@@ -9,6 +9,6 @@ namespace dotnetApp.Dtos.Collection
   {
     public Guid id { get; set; }
     public string name { get; set; }
-    public Guid soundId { get; set; }
+    public Guid? soundId { get; set; }
   }
 }

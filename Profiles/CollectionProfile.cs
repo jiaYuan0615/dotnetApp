@@ -20,7 +20,7 @@ namespace dotnetApp.Profiles
       CreateMap<IList<CollectionItem>, CollectionItems>()
       .ForMember(x => x.id, y => y.MapFrom(o => o.FirstOrDefault().id))
       .ForMember(x => x.name, y => y.MapFrom(o => o.FirstOrDefault().name))
-      .ForMember(x => x.sounds, y => y.MapFrom(o => o.Select(v => v.soundId).ToList()));
+      .ForMember(x => x.sounds, y => y.MapFrom(o => o.Select(v => v.soundId.ToString()).ToList()));
     }
   }
 }
