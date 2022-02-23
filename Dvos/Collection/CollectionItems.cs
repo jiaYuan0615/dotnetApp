@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using dotnetApp.Dtos.Sound;
+using dotnetApp.Dvos.Sound;
 
 namespace dotnetApp.Dvos.Collection
 {
@@ -8,6 +7,6 @@ namespace dotnetApp.Dvos.Collection
   {
     public string id { get; set; }
     public string name { get; set; }
-    public List<string> sounds { get; set; }
+    public List<SoundItems> sounds { get; set; }
   }
 }

@@ -4,6 +4,8 @@ using dotnetApp.Dtos.Collection;
 using dotnetApp.Dvos.Collection;
 using dotnetApp.Models;
 using System.Linq;
+using dotnetApp.Dtos.Sound;
+using dotnetApp.Dvos.Sound;
 
 namespace dotnetApp.Profiles
 {
@@ -22,7 +24,7 @@ namespace dotnetApp.Profiles
       .ForMember(x => x.name, y => y.MapFrom(o => o.FirstOrDefault().name))
       .ForMember(
         x => x.sounds,
-        y => y.MapFrom(o => string.IsNullOrEmpty(o.FirstOrDefault().soundId.ToString()) ? new List<string>() : o.Select(v => v.soundId.ToString()).ToList())
+        y => y.MapFrom(o => string.IsNullOrEmpty(o.FirstOrDefault().soundId.ToString()) ? new List<SoundItems>() : o.Select(v => new SoundItems { id = v.soundId.ToString(), name = v.soundName }).ToList())
       );
     }
   }

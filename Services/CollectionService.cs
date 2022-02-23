@@ -39,7 +39,8 @@ namespace dotnetApp.Services
       SELECT
         collections.id,
         collections.`name`,
-        `sounds`.id AS soundId
+        `sounds`.id AS soundId,
+        `sounds`.name AS soundName
       FROM
         collections
         LEFT JOIN ( collection_sound AS cs INNER JOIN `sounds` ON `sounds`.id = cs.soundId ) ON cs.collectionId = collections.id
