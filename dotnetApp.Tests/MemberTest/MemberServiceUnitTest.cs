@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using dotnetApp.dotnetApp.Services;
 using dotnetApp.dotnetApp.Models;
+using dotnetApp.dotnetApp.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

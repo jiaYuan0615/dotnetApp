@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -15,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotnetApp.csproj" />
+    <ProjectReference Include="..\dotnetApp\dotnetApp.csproj" />
   </ItemGroup>
+
 
 </Project>
