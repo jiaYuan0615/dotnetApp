@@ -67,37 +67,6 @@ namespace dotnetApp.dotnetApp.Services
       return memberRoles;
     }
 
-    public List<Member> GetMemberCollectionItem(string id)
-    {
-      // using orm
-      List<Member> member = _databaseContext.Members
-      .Include(x => x.Collections)
-      .ToList();
-      return member;
-    }
-
-    public List<MemberCollection> GetMemberCollection(string id)
-    {
-      FormattableString sql = $@"
-      SELECT
-        members.id,
-        members.email,
-        members.`name`,
-        members.gender,
-        collections.id AS collectionId,
-        collections.`name` AS collectionName
-      FROM
-        members
-        LEFT JOIN collections ON collections.memberId = members.id
-      WHERE
-        members.id = {id}";
-      List<MemberCollection> member = _databaseContext.MemberCollections
-      .FromSqlInterpolated(sql)
-      .AsNoTracking()
-      .ToList();
-      return member;
-    }
-
     public List<MemberCollection> GetMemberCollection()
     {
       string sql = $@"

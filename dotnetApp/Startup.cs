@@ -129,6 +129,7 @@ namespace dotnetApp
         // };
       });
       // services.AddScoped<CustomAuthorization>();
+      services.AddHttpClient();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<MemberService>();
       services.AddScoped<CollectionService>();

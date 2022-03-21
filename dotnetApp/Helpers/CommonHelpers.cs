@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using dotnetApp.dotnetApp.Dtos;
 
 namespace dotnetApp.dotnetApp.Helpers
@@ -13,6 +14,16 @@ namespace dotnetApp.dotnetApp.Helpers
       var item = typeof(T).GetProperties();
       IEnumerable<string> items = item.Select(x => x.Name);
       return items;
+    }
+
+    public static string JsonTranslateHandler(object param)
+    {
+      JsonSerializerOptions options = new JsonSerializerOptions
+      {
+        WriteIndented = true,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+      };
+      return JsonSerializer.Serialize(param, options);
     }
 
     // Equals to Lodash xor
