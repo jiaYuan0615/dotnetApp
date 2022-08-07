@@ -25,7 +25,7 @@ namespace dotnetApp.dotnetApp.Profiles
 
       CreateMap<IList<MemberRole>, MemberRoles>()
       .ForMember(x => x.id, y => y.MapFrom(o => o.FirstOrDefault().id))
-      .ForMember(x => x.Roles, y => y.MapFrom(o => o.Select(v => v.name).ToList()));
+      .ForMember(x => x.Roles, y => y.MapFrom(o => string.IsNullOrEmpty(o.FirstOrDefault().name) ? new List<string>() : o.Select(v => v.name).ToList()));
 
       // 1:m
       CreateMap<IList<MemberCollection>, MemberCollections>()
