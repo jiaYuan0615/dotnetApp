@@ -2,3 +2,4 @@ bin/
 obj/
 internal-nlog.txt
 wwwroot/
+.vscode/

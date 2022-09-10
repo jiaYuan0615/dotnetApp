@@ -61,6 +61,7 @@ namespace dotnetApp.Tests.MemberTest
       Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", this.token);
       HttpResponseMessage response = await Client.GetAsync(url);
       // string authorization = response.RequestMessage.Headers.Authorization.ToString();
+      Console.WriteLine(this.token);
       Assert.True(response.IsSuccessStatusCode);
       Assert.AreEqual(200, (int)response.StatusCode);
     }
