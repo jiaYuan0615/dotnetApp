@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using dotnetApp.dotnetApp.Dtos.Singer;
+using dotnetApp.dotnetApp.Models;
 using dotnetApp.dotnetApp.Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -17,27 +21,13 @@ namespace dotnetApp.Tests.SoundTest
   [TestFixture]
   public class SoundControllerTest
   {
-    static IWebHost _webHost = null;
     private TestServer Server;
     private HttpClient Client;
-    private SoundService _soundService;
     private IConfiguration Configuration;
-
-    static T GetService<T>()
-    {
-      IServiceScope scope = _webHost.Services.CreateScope();
-      return scope.ServiceProvider.GetRequiredService<T>();
-    }
 
     [SetUp]
     public void SetUp()
     {
-      _webHost = WebHost.CreateDefaultBuilder()
-                .UseStartup<Startup>()
-                .Build();
-
-      _soundService = GetService<SoundService>();
-
       // 模擬 httpClient 測試環境
       Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                                                   .Build();

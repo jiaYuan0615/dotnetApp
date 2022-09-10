@@ -1,15 +1,12 @@
-using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using dotnetApp.dotnetApp.Dtos.Member;
-using dotnetApp.dotnetApp.Services;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using static System.Net.Mime.MediaTypeNames;
@@ -17,32 +14,16 @@ using static System.Net.Mime.MediaTypeNames;
 namespace dotnetApp.Tests.MemberTest
 {
   [TestFixture]
-  public class MemberServiceUnitTest
+  public class MemberControllerTest
   {
-    private MemberService _memberService;
-    private PasswordService _passwordService;
-    static IWebHost _webHost = null;
-
     private TestServer Server;
     private HttpClient Client;
     private IConfiguration Configuration;
     private string token = "";
 
-    static T GetService<T>()
-    {
-      IServiceScope scope = _webHost.Services.CreateScope();
-      return scope.ServiceProvider.GetRequiredService<T>();
-    }
-
     [SetUp]
     public async Task SetUp()
     {
-      _webHost = WebHost.CreateDefaultBuilder()
-                .UseStartup<Startup>()
-                .Build();
-      _memberService = GetService<MemberService>();
-      _passwordService = GetService<PasswordService>();
-
       // 模擬 httpClient 測試環境
       Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                                                   .Build();
@@ -90,8 +71,6 @@ namespace dotnetApp.Tests.MemberTest
       string url = "api/member";
 
       HttpResponseMessage response = await Client.GetAsync(url);
-      // List<Member> member = _memberService.GetMember();
-      // Assert.IsNotNull(member);
       Assert.False(response.IsSuccessStatusCode);
       Assert.AreEqual(401, (int)response.StatusCode);
     }
@@ -105,6 +84,7 @@ namespace dotnetApp.Tests.MemberTest
         email = email,
         password = password
       };
+
       StringContent item = new StringContent(
         JsonConvert.SerializeObject(memberLogin),
         Encoding.UTF8,

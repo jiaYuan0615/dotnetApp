@@ -48,6 +48,10 @@ namespace dotnetApp.dotnetApp.Controllers
     [HttpGet]
     public IActionResult GetSound()
     {
+      // 自訂Query名稱 [FromQuery(Name ="query[]")] string[] query, [FromQuery(Name ="item[]")] string[] item
+      // e.g. /api/sound?query[]=123&query[]=456&item[]=135&item[]=246
+      // 不定義名稱則會預設使用參數名稱 [FromQuery] string[] query, [FromQuery] string[] item,
+      // e.g. /api/sound?query=123&query=456&item=135&item=246
       string _method = "查詢所有歌曲";
       try
       {

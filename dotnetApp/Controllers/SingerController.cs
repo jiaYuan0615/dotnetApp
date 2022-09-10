@@ -97,17 +97,19 @@ namespace dotnetApp.dotnetApp.Controllers
       string _method = "新增歌手";
       try
       {
+        Singer singer = _mapper.Map<Singer>(singerCreate);
         Image image = _fileService.UploadImage("singer", singerCreate.avatar);
         await _imageService.PostImage(image);
-        Singer singer = _mapper.Map<Singer>(singerCreate);
         singer.avatar = Path.Combine(api, image.id.ToString());
         await _singerService.PostSinger(singer);
         return Ok(new { message = $"{_method}成功" });
       }
-      catch (Exception)
+      catch (Exception e)
       {
         _logger.LogError(LogEvent.error, $"執行{_method} 出現輸入的內容有誤");
-        throw new AppException($"{_method}失敗");
+
+        throw new AppException(e.ToString());
+        // throw new AppException($"{_method}失敗");
       }
     }
 

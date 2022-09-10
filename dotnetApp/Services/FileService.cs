@@ -9,9 +9,7 @@ namespace dotnetApp.dotnetApp.Services
   public class FileService
   {
     private readonly string _folder;
-    public FileService(
-      IWebHostEnvironment env
-      )
+    public FileService(IWebHostEnvironment env)
     {
       _folder = env.WebRootPath;
     }
@@ -28,6 +26,7 @@ namespace dotnetApp.dotnetApp.Services
       using (FileStream stream = new FileStream(path, FileMode.Create))
       {
         file.CopyTo(stream);
+        stream.Dispose();
       }
 
       Image image = new Image()

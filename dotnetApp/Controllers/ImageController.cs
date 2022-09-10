@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using dotnetApp.dotnetApp.Dtos;
@@ -26,6 +30,9 @@ namespace dotnetApp.dotnetApp.Controllers
     private readonly IMapper _mapper;
     private readonly FileService _fileService;
     private readonly string _folder;
+    private readonly string _path;
+    private readonly IHttpClientFactory _httpClientFactory;
+
     private readonly static Dictionary<string, string> _contentTypes = new Dictionary<string, string>
         {
             {".png", "image/png"},
@@ -37,7 +44,8 @@ namespace dotnetApp.dotnetApp.Controllers
       IMapper mapper,
       ILogger<ImageController> logger,
       FileService fileService,
-      IWebHostEnvironment env
+      IWebHostEnvironment env,
+      IHttpClientFactory httpClientFactory
       )
     {
       _imageService = imageService;
@@ -45,6 +53,8 @@ namespace dotnetApp.dotnetApp.Controllers
       _mapper = mapper;
       _fileService = fileService;
       _folder = $"{env.WebRootPath}/storage/image";
+      _path = $"{env.WebRootPath}/storage/";
+      _httpClientFactory = httpClientFactory;
     }
 
     // Get api/image/{id}
@@ -62,6 +72,42 @@ namespace dotnetApp.dotnetApp.Controllers
       {
         FileStream image = System.IO.File.OpenRead(defaultImage);
         return File(image, "image/png");
+      }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> TestPostImage()
+    {
+      try
+      {
+        // Currently call self api is not work
+        // solution is apply ssl certificate
+        HttpClient httpClient = _httpClientFactory.CreateClient();
+        string url = "https://localhost:5000/api/image";
+        string target = Path.Combine(_path, "404.png");
+        FileStream stream = System.IO.File.OpenRead(target);
+
+        HttpResponseMessage response = null;
+        StreamContent image = new StreamContent(stream);
+        // 需要加上 ContentType 才不會出錯
+        // 呼叫其他服務則可加可不加
+        image.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+        using (var content = new MultipartFormDataContent())
+        {
+          content.Add(image, "image", Path.GetFileName(target));
+          // httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+          response = await httpClient.PostAsync(url, content);
+          content.Dispose();
+        }
+        return Ok(new
+        {
+          message = "測試通過",
+          response = response.IsSuccessStatusCode
+        });
+      }
+      catch (System.Exception)
+      {
+        throw new AppException("測試失敗");
       }
     }
 

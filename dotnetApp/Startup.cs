@@ -31,6 +31,7 @@ namespace dotnetApp
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddHttpClient();
       services.AddDbContext<DatabaseContext>(options =>
       {
         string ConnectionString = Configuration.GetConnectionString("connectionStrings");
@@ -129,7 +130,6 @@ namespace dotnetApp
         // };
       });
       // services.AddScoped<CustomAuthorization>();
-      services.AddHttpClient();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddScoped<MemberService>();
       services.AddScoped<CollectionService>();
@@ -150,13 +150,13 @@ namespace dotnetApp
       {
         app.UseDeveloperExceptionPage();
         app.UseSwagger();
-        app.UseSwaggerUI(v => v.SwaggerEndpoint("v1/swagger.json", "My API V1"));
+        app.UseSwaggerUI(v => v.SwaggerEndpoint("v1/swagger.json", "API V1"));
       }
       else
       {
         // app.UseHsts();
         app.UseSwagger();
-        app.UseSwaggerUI(v => v.SwaggerEndpoint("v1/swagger.json", "My API V1"));
+        app.UseSwaggerUI(v => v.SwaggerEndpoint("v1/swagger.json", "API V1"));
       }
 
       app.UseHttpsRedirection();
